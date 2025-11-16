@@ -443,7 +443,7 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         try {
-          const KEY_RESULTS_LIST_ID = "901315739970";
+          const KEY_RESULTS_LIST_ID = "901315739968";
           const response = await fetch(
             `https://api.clickup.com/api/v2/list/${KEY_RESULTS_LIST_ID}/task`,
             {
