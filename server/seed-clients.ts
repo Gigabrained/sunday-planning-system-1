@@ -128,6 +128,12 @@ async function seedClients() {
       const totalAsinsFam = getCustomFieldValue(task, "Total Asins FAM");
       const totalAsinsPpc = getCustomFieldValue(task, "Total Asins PPC");
       const recurringFee = getCustomFieldValue(task, "4. Recurring Retainer Fee");
+      
+      // Get DEFCON level (note: field name has trailing space)
+      const defconValue = getCustomFieldValue(task, "Defcon ") || getCustomFieldValue(task, "Defcon");
+      // Map ClickUp dropdown values: 0=not set, 1=DEFCON 1, 2=DEFCON 2, etc.
+      // Default to 3 if not set
+      const defcon = defconValue && defconValue !== 0 ? defconValue : 3;
 
       const clientData = {
         clickupTaskId: task.id,
@@ -136,7 +142,7 @@ async function seedClients() {
         brandName: brandName || task.name,
         company: brandName || task.name,
         status: clientStatus.toLowerCase().replace(" ", "_"),
-        defcon: 3, // Default to DEFCON 3 (will map from custom field later)
+        defcon: defcon,
         amOwner: null, // Will need to map this if available
         ppcOwner: null, // Will need to map this if available
         creativeOwner: null, // Will need to map this if available
