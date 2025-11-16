@@ -43,15 +43,14 @@ async function startServer() {
   }
 
   // Seed sample client data (for testing, safe to run multiple times)
-  // TEMPORARILY DISABLED to debug deployment issues
-  // try {
-  //   console.log('[Server] Seeding client data...');
-  //   const { seedClients } = await import('../seed-clients');
-  //   await seedClients();
-  //   console.log('[Server] Client data seeding completed');
-  // } catch (error) {
-  //   console.error("[Server] Failed to seed client data:", error);
-  // }
+  try {
+    console.log('[Server] Seeding client data...');
+    const { seedClients } = await import('../seed-clients');
+    await seedClients();
+    console.log('[Server] Client data seeding completed');
+  } catch (error) {
+    console.error("[Server] Failed to seed client data:", error);
+  }
 
   const app = express();
   const server = createServer(app);
