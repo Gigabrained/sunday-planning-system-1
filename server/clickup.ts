@@ -430,6 +430,26 @@ export async function fetchObjectives(): Promise<Objective[]> {
     return [];
   }
 
+  // First, get the list to get custom field definitions
+  const listResponse = await fetch(
+    `${CLICKUP_API_URL}/list/${OBJECTIVES_LIST_ID}`,
+    {
+      headers: {
+        Authorization: ENV.clickupApiKey,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  let deptFieldConfig: any = null;
+  if (listResponse.ok) {
+    const listData = await listResponse.json();
+    const deptField = listData.custom_fields?.find((f: any) => f.name === "Department");
+    if (deptField) {
+      deptFieldConfig = deptField;
+    }
+  }
+
   const response = await fetch(
     `${CLICKUP_API_URL}/list/${OBJECTIVES_LIST_ID}/task?include_closed=false`,
     {
@@ -449,12 +469,27 @@ export async function fetchObjectives(): Promise<Objective[]> {
 
   return tasks.map((task) => {
     const deptValue = getCustomFieldValue(task, "Department");
+    let departmentName: string | undefined = undefined;
+    
+    // Map department option ID/index to name
+    if (deptValue !== null && deptValue !== undefined && deptFieldConfig) {
+      const options = deptFieldConfig.type_config?.options || [];
+      const option = options.find((o: any) => 
+        o.id === deptValue || 
+        o.orderindex === deptValue || 
+        String(o.orderindex) === String(deptValue)
+      );
+      if (option) {
+        departmentName = option.name;
+      }
+    }
+    
     return {
       id: task.id,
       name: task.name,
       description: task.description || "",
       status: task.priority?.priority || "to do",
-      department: deptValue !== null && deptValue !== undefined ? String(deptValue) : undefined,
+      department: departmentName,
     };
   });
 }
