@@ -136,7 +136,7 @@ async function seedClients() {
         brandName: brandName || task.name,
         company: brandName || task.name,
         status: clientStatus.toLowerCase().replace(" ", "_"),
-        defcon: null, // Will need to map this if available
+        defcon: 3, // Default to DEFCON 3 (will map from custom field later)
         amOwner: null, // Will need to map this if available
         ppcOwner: null, // Will need to map this if available
         creativeOwner: null, // Will need to map this if available
