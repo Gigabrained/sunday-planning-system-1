@@ -143,13 +143,13 @@ export function BusinessNeedleMovers({
     return keyResult?.subtasks || [];
   };
 
-  const handleLinkOKR = async (taskId: string) => {
-    const objectiveId = selectedObjectives[taskId];
+  const handleLinkOKR = async (taskId: string, forceObjectiveId?: string) => {
+    const objectiveId = forceObjectiveId || selectedObjectives[taskId];
     const keyResultId = selectedKeyResults[taskId];
     const keyTargetId = selectedKeyTargets[taskId];
     
-    if (!objectiveId || !keyResultId) {
-      toast.error("Please select both an Objective and Key Result");
+    if (!objectiveId) {
+      toast.error("Please select an objective");
       return;
     }
     
@@ -472,6 +472,10 @@ export function BusinessNeedleMovers({
                               setSelectedObjectives({ ...selectedObjectives, [nm.id!]: value });
                               // Clear key result when objective changes
                               setSelectedKeyResults({ ...selectedKeyResults, [nm.id!]: "" });
+                              // Auto-save when objective is selected
+                              if (value) {
+                                handleLinkOKR(nm.id!, value);
+                              }
                             }}
                           >
                             <SelectTrigger className="h-8 w-48">
@@ -528,19 +532,21 @@ export function BusinessNeedleMovers({
                             </Select>
                           )}
                           
-                          <Button
-                            size="sm"
-                            variant="default"
-                            onClick={() => handleLinkOKR(nm.id!)}
-                            disabled={!selectedObjectives[nm.id!] || !selectedKeyResults[nm.id!] || linkOKRMutation.isPending}
-                            className="ml-auto"
-                          >
-                            {linkOKRMutation.isPending ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              "Link to OKR"
-                            )}
-                          </Button>
+                          {selectedKeyResults[nm.id!] && (
+                            <Button
+                              size="sm"
+                              variant="default"
+                              onClick={() => handleLinkOKR(nm.id!)}
+                              disabled={linkOKRMutation.isPending}
+                              className="ml-auto"
+                            >
+                              {linkOKRMutation.isPending ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                "Update Key Result"
+                              )}
+                            </Button>
+                          )}
                         </div>
                       )}
                     </div>
