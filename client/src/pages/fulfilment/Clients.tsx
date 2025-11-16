@@ -31,6 +31,15 @@ export default function FulfilmentClients() {
 
   // Fetch clients using tRPC
   const { data: allClients = [], isLoading, error, refetch } = trpc.fulfilment.getClients.useQuery();
+  const seedClientsMutation = trpc.fulfilment.seedClients.useMutation({
+    onSuccess: () => {
+      refetch();
+      alert('Successfully imported all clients from ClickUp!');
+    },
+    onError: (error) => {
+      alert(`Failed to import clients: ${error.message}`);
+    },
+  });
 
   // Client-side filtering
   const clients = allClients.filter((client: ClickUpClient) => {
@@ -89,10 +98,21 @@ export default function FulfilmentClients() {
               Manage ClickUp clients and MRP seller mappings
             </p>
           </div>
-          <Button onClick={() => refetch()} variant="default" className="bg-blue-600 hover:bg-blue-700">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => seedClientsMutation.mutate()} 
+              variant="default" 
+              className="bg-green-600 hover:bg-green-700"
+              disabled={seedClientsMutation.isPending}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${seedClientsMutation.isPending ? 'animate-spin' : ''}`} />
+              {seedClientsMutation.isPending ? 'Importing...' : 'Import from ClickUp'}
+            </Button>
+            <Button onClick={() => refetch()} variant="default" className="bg-blue-600 hover:bg-blue-700">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}

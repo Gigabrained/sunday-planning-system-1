@@ -2125,6 +2125,12 @@ export const appRouter = router({
       await migrateClients();
       return { success: true, message: 'Migration completed successfully' };
     }),
+    // Import all clients from ClickUp API
+    seedClients: protectedProcedure.mutation(async () => {
+      const { seedClients } = await import('./seed-clients');
+      await seedClients();
+      return { success: true, message: 'Successfully imported all clients from ClickUp' };
+    }),
   }),
 
   // ===== HIRING SYSTEM ROUTERS (from LinkedIn Ads Tracker) =====
