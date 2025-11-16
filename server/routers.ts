@@ -473,6 +473,75 @@ export const appRouter = router({
         }
       }),
 
+    updateObjectiveDepartment: publicProcedure
+      .input(z.object({
+        objectiveId: z.string(),
+        department: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        try {          
+          // Get list to find custom field IDs
+          const listResponse = await fetch(
+            'https://api.clickup.com/api/v2/list/901315739969',
+            {
+              headers: {
+                'Authorization': process.env.CLICKUP_API_KEY!,
+              },
+            }
+          );
+
+          if (!listResponse.ok) {
+            throw new Error('Failed to get list custom fields');
+          }
+
+          const listData = await listResponse.json();
+          const deptField = listData.custom_fields?.find((f: any) => f.name === 'Department');
+          
+          if (!deptField) {
+            throw new Error('Department custom field not found');
+          }
+
+          const deptOption = deptField.type_config?.options?.find(
+            (o: any) => o.name === input.department
+          );
+
+          if (!deptOption) {
+            throw new Error(`Department option "${input.department}" not found`);
+          }
+
+          // Update task with department
+          const updateResponse = await fetch(
+            `https://api.clickup.com/api/v2/task/${input.objectiveId}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Authorization': process.env.CLICKUP_API_KEY!,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                custom_fields: [
+                  {
+                    id: deptField.id,
+                    value: deptOption.id,
+                  },
+                ],
+              }),
+            }
+          );
+
+          if (!updateResponse.ok) {
+            const errorText = await updateResponse.text();
+            console.error('[OKR] Update error:', errorText);
+            throw new Error('Failed to update department');
+          }
+
+          return { success: true };
+        } catch (error) {
+          console.error('[OKR] Error updating department:', error);
+          throw new Error('Failed to update objective department');
+        }
+      }),
+
     addSubtask: publicProcedure
       .input(z.object({
         parentId: z.string(),
