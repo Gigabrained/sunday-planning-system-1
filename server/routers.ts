@@ -399,6 +399,80 @@ export const appRouter = router({
       }
     }),
 
+    createObjective: publicProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          const OBJECTIVES_LIST_ID = "901315739969";
+          const response = await fetch(
+            `https://api.clickup.com/api/v2/list/${OBJECTIVES_LIST_ID}/task`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': process.env.CLICKUP_API_KEY!,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: input.name,
+                description: input.description || '',
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[OKR] ClickUp API error response:', errorText);
+            throw new Error(`ClickUp API error: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          return { success: true, objectiveId: data.id, name: data.name };
+        } catch (error) {
+          console.error("[OKR] Error creating objective:", error);
+          throw new Error("Failed to create objective");
+        }
+      }),
+
+    createKeyResult: publicProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          const KEY_RESULTS_LIST_ID = "901315739970";
+          const response = await fetch(
+            `https://api.clickup.com/api/v2/list/${KEY_RESULTS_LIST_ID}/task`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': process.env.CLICKUP_API_KEY!,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: input.name,
+                description: input.description || '',
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[OKR] ClickUp API error response:', errorText);
+            throw new Error(`ClickUp API error: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          return { success: true, keyResultId: data.id, name: data.name };
+        } catch (error) {
+          console.error("[OKR] Error creating key result:", error);
+          throw new Error("Failed to create key result");
+        }
+      }),
+
     addSubtask: publicProcedure
       .input(z.object({
         parentId: z.string(),
