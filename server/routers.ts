@@ -491,13 +491,16 @@ export const appRouter = router({
           );
 
           if (!listResponse.ok) {
-            throw new Error('Failed to get list custom fields');
+            const errorText = await listResponse.text();
+            console.error('[OKR] Failed to get list:', errorText);
+            throw new Error(`Failed to get list custom fields: ${errorText}`);
           }
 
           const listData = await listResponse.json();
           const deptField = listData.custom_fields?.find((f: any) => f.name === 'Department');
           
           if (!deptField) {
+            console.error('[OKR] Available fields:', listData.custom_fields?.map((f: any) => f.name));
             throw new Error('Department custom field not found');
           }
 
@@ -506,6 +509,7 @@ export const appRouter = router({
           );
 
           if (!deptOption) {
+            console.error('[OKR] Available options:', deptField.type_config?.options?.map((o: any) => o.name));
             throw new Error(`Department option "${input.department}" not found`);
           }
 
