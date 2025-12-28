@@ -68,6 +68,15 @@ async function startServer() {
   const quarterlyReviewRouter = (await import("../routes/quarterlyReview")).default;
   app.use("/api/quarterly-review", quarterlyReviewRouter);
   
+  // One-time migration endpoint (will self-delete after use)
+  try {
+    const migrationRouter = (await import("../routes/runMigration")).default;
+    app.use("/api", migrationRouter);
+  } catch (error) {
+    // Migration file may have been deleted after use
+    console.log('[Server] Migration endpoint not available (already run)');
+  }
+  
   // REST API endpoints for roadmap integration with daily standup
   
   // GET roadmap tasks
