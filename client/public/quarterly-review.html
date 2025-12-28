@@ -1,0 +1,2869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarterly Review - Q4 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/quarterly-review-api.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        select, .btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #7c3aed;
+        }
+
+        .btn-secondary {
+            background: #475569;
+            border-color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #334155;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 40px;
+        }
+
+        .tab {
+            background: transparent;
+            color: #64748b;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            color: #94a3b8;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+            border-bottom-color: #a78bfa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #334155;
+        }
+
+        .card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .card p {
+            color: #94a3b8;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            font-family: inherit;
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        /* Pillar Sections */
+        .pillar-section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .pillar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .pillar-title {
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .pillar-last-rating {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .rating-section {
+            margin-bottom: 32px;
+        }
+
+        .rating-label {
+            display: block;
+            margin-bottom: 12px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            width: 50px;
+            height: 50px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .rating-btn:hover {
+            border-color: #8b5cf6;
+        }
+
+        .rating-btn.selected {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: #ffffff;
+        }
+
+        .manifestation-states {
+            margin-bottom: 32px;
+        }
+
+        .manifestation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .manifestation-header h4 {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: transparent;
+            border: none;
+            color: #8b5cf6;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .edit-btn:hover {
+            color: #a78bfa;
+        }
+
+        .manifestation-state {
+            background: #0f172a;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            border-left: 3px solid #334155;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .manifestation-state.editing {
+            border-left-color: #8b5cf6;
+        }
+
+        .manifestation-state-text {
+            flex: 1;
+        }
+
+        .manifestation-state input {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .manifestation-state input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .remove-btn:hover {
+            color: #ef4444;
+        }
+
+        .add-state-btn {
+            background: transparent;
+            border: 1px dashed #334155;
+            color: #8b5cf6;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .add-state-btn:hover {
+            border-color: #8b5cf6;
+            background: #0f172a;
+        }
+
+        .question-section {
+            margin-bottom: 32px;
+        }
+
+        .question-section label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: #94a3b8;
+        }
+
+        .question-section textarea {
+            min-height: 100px;
+        }
+
+        .audio-section {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .audio-section h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .record-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .record-btn:hover {
+            background: #dc2626;
+        }
+
+        .record-btn.recording {
+            background: #dc2626;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .export-audio-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .export-audio-btn:hover {
+            background: #059669;
+        }
+
+        .highlights-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .highlight-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        .highlight-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 24px;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .highlight-field {
+            margin-bottom: 20px;
+        }
+
+        .highlight-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .highlight-field input,
+        .highlight-field textarea {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .highlight-field textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .highlight-field input:focus,
+        .highlight-field textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .progress-viz {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .progress-viz h2 {
+            font-size: 2rem;
+            margin-bottom: 32px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .chart-container {
+            position: relative;
+            margin-bottom: 48px;
+        }
+
+        .radar-container {
+            max-width: 600px;
+            margin: 0 auto 48px;
+        }
+
+        .status-message {
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.error {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quarterly Review - Q4 2025</h1>
+        
+        <div class="controls">
+            <select id="quarterSelect">
+                <option value="Q4 2025">Q4 2025</option>
+                <option value="Q3 2025">Q3 2025</option>
+                <option value="Q2 2025">Q2 2025</option>
+                <option value="Q1 2025">Q1 2025</option>
+            </select>
+            <button class="btn" onclick="saveReview()">Save Review</button>
+            <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('reflections')">Reflections</button>
+            <button class="tab" onclick="switchTab('vision')">Vision Casting</button>
+            <button class="tab" onclick="switchTab('manifestation')">Manifestation</button>
+            <button class="tab" onclick="switchTab('visualization')">Visualization</button>
+            <button class="tab" onclick="switchTab('action')">Action Planning</button>
+            <button class="tab" onclick="switchTab('progress')">Progress</button>
+        </div>
+
+        <!-- Daily Check-In Tab -->
+        <div id="daily" class="tab-content" style="display: none;">
+            <!-- Perfect Day Schedule -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">📅 Perfect Day Schedule</h2>
+                    <button class="edit-btn" onclick="toggleScheduleEdit()" id="scheduleEditBtn">Edit</button>
+                    <button onclick="resetSchedule()" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-left: 8px;">Reset Schedule</button>
+                </div>
+                <p style="color: #94a3b8; margin-bottom: 16px;">Design your ideal day with time-blocked activities.</p>
+                
+                <!-- View Toggle -->
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <button id="dayViewBtn" onclick="switchScheduleView('day')" style="background: #10b981; color: white; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                        Day View
+                    </button>
+                    <button id="weekViewBtn" onclick="switchScheduleView('week')" style="background: #334155; color: #e2e8f0; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                        Week View
+                    </button>
+                </div>
+                
+                <!-- Day Selector (for Day View) -->
+                <div id="daySelectorContainer" style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <button onclick="selectDay('monday')" class="day-selector-btn" data-day="monday" style="flex: 1; background: #10b981; color: white; border: none; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">M</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Monday</div>
+                    </button>
+                    <button onclick="selectDay('tuesday')" class="day-selector-btn" data-day="tuesday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">T</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Tuesday</div>
+                    </button>
+                    <button onclick="selectDay('wednesday')" class="day-selector-btn" data-day="wednesday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">W</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Wednesday</div>
+                    </button>
+                    <button onclick="selectDay('thursday')" class="day-selector-btn" data-day="thursday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">TH</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Thursday</div>
+                    </button>
+                    <button onclick="selectDay('friday')" class="day-selector-btn" data-day="friday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">F</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Friday</div>
+                    </button>
+                    <button onclick="selectDay('saturday')" class="day-selector-btn" data-day="saturday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">S</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Saturday</div>
+                    </button>
+                    <button onclick="selectDay('sunday')" class="day-selector-btn" data-day="sunday" style="flex: 1; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 12px; cursor: pointer; font-weight: 600;">
+                        <div style="font-size: 1.1rem;">Su</div>
+                        <div style="font-size: 0.75rem; margin-top: 4px;">Sunday</div>
+                    </button>
+                </div>
+                
+                <!-- Day View Schedule -->
+                <div id="dayViewSchedule" style="display: flex; background: #0f172a; border: 1px solid #334155; border-radius: 8px; overflow: hidden;">
+                    <!-- Time Column -->
+                    <div style="width: 80px; border-right: 1px solid #334155; background: #1e293b;">
+                        <div style="height: 40px; border-bottom: 1px solid #334155;"></div>
+                        <div id="timeColumn" style="position: relative;">
+                            <!-- Time labels generated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule Grid -->
+                    <div style="flex: 1; position: relative; min-height: 800px;" id="scheduleGrid">
+                        <!-- Grid lines and tasks generated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Week View Schedule -->
+                <div id="weekViewSchedule" style="display: none;">
+                    <div id="weekGridContainer" style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; overflow-x: auto;">
+                        <!-- Week grid generated by JS -->
+                    </div>
+                </div>
+                
+                <div id="addTaskSection" style="display: none; margin-top: 16px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #a78bfa;">Add/Edit Task</h3>
+                    <input type="hidden" id="editingTaskIndex" value="-1" />
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Task Title</label>
+                        <input type="text" id="taskTitle" placeholder="Morning workout" 
+                               style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem;" />
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Start Time</label>
+                            <input type="time" id="taskStartTime" 
+                                   style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem;" />
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Duration (min)</label>
+                            <input type="number" id="taskDuration" placeholder="60" min="15" step="15" 
+                                   style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem;" />
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Pillar</label>
+                            <select id="taskPillar" 
+                                    style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem;">
+                                <option value="Spiritual">Spiritual</option>
+                                <option value="Social">Social</option>
+                                <option value="Relationship">Relationship</option>
+                                <option value="Status">Status</option>
+                                <option value="Team">Team</option>
+                                <option value="Business">Business</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Environment">Environment</option>
+                                <option value="Family">Family</option>
+                                <option value="Skills">Skills</option>
+                                <option value="Health">Health</option>
+                                <option value="Affirmations">Affirmations</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Checklist Items (one per line)</label>
+                        <textarea id="taskChecklist" placeholder="Warm up\nStrength training\nCool down" 
+                                  style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="saveTask()" style="background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%); color: white; border: none; border-radius: 6px; padding: 10px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer;">
+                            Save Task
+                        </button>
+                        <button onclick="cancelTaskEdit()" style="background: #334155; color: #e2e8f0; border: none; border-radius: 6px; padding: 10px 24px; font-size: 0.95rem; cursor: pointer;">
+                            Cancel
+                        </button>
+                        <button onclick="deleteTask()" id="deleteTaskBtn" style="display: none; background: #ef4444; color: white; border: none; border-radius: 6px; padding: 10px 24px; font-size: 0.95rem; cursor: pointer; margin-left: auto;">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Morning Ritual Section -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">☀️ Morning Ritual</h2>
+                    <select id="morningFrequency" onchange="saveFrequency('morning', this.value)" style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 0.9rem;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+                    <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                        <input type="checkbox" id="morning1" onchange="saveDailyCheck('morning1', this.checked)" style="margin-right: 12px; width: 20px; height: 20px;" />
+                        <span style="color: #cbd5e1;">🌊 Listen to Abundance Frequency Audio (or set intention)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                        <input type="checkbox" id="morning2" onchange="saveDailyCheck('morning2', this.checked)" style="margin-right: 12px; width: 20px; height: 20px;" />
+                        <span style="color: #cbd5e1;">🌟 Complete 10-Step Abundance Release</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                        <input type="checkbox" id="morning3" onchange="saveDailyCheck('morning3', this.checked)" style="margin-right: 12px; width: 20px; height: 20px;" />
+                        <span style="color: #cbd5e1;">📖 Read/Record Daily Affirmations</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                        <input type="checkbox" id="morning4" onchange="saveDailyCheck('morning4', this.checked)" style="margin-right: 12px; width: 20px; height: 20px;" />
+                        <span style="color: #cbd5e1;">👁️ Review Today's Vision Reminder</span>
+                    </label>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #a78bfa; font-weight: 600;">What would feel most joyful today?</label>
+                    <textarea id="dailyIntention" onchange="saveDailyField('intention', this.value)" placeholder="Set your intention for the day..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <!-- Evening Ritual Section -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">🌙 Evening Ritual</h2>
+                    <select id="eveningFrequency" onchange="saveFrequency('evening', this.value)" style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 0.9rem;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #a78bfa;">Daily Inventory</h3>
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Where was I resentful today?</label>
+                    <textarea id="inventoryResentment" onchange="saveDailyField('resentment', this.value)" placeholder="Who or what triggered resentment?" 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 60px; resize: vertical; margin-bottom: 16px;"></textarea>
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Where was I selfish, dishonest, or afraid?</label>
+                    <textarea id="inventorySelfish" onchange="saveDailyField('selfish', this.value)" placeholder="Be honest with yourself..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 60px; resize: vertical; margin-bottom: 16px;"></textarea>
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Who do I owe amends to?</label>
+                    <textarea id="inventoryAmends" onchange="saveDailyField('amends', this.value)" placeholder="Anyone you need to make right with?" 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 60px; resize: vertical; margin-bottom: 16px;"></textarea>
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">What did I do well today?</label>
+                    <textarea id="inventoryWins" onchange="saveDailyField('wins', this.value)" placeholder="Celebrate your wins..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 60px; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <!-- Gratitude Section -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">🙏 Gratitude</h2>
+                    <select id="gratitudeFrequency" onchange="saveFrequency('gratitude', this.value)" style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 0.9rem;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">I am grateful for...</label>
+                    <input type="text" id="gratitude1" onchange="saveDailyField('gratitude1', this.value)" placeholder="1." 
+                           style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 12px;" />
+                    <input type="text" id="gratitude2" onchange="saveDailyField('gratitude2', this.value)" placeholder="2." 
+                           style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 12px;" />
+                    <input type="text" id="gratitude3" onchange="saveDailyField('gratitude3', this.value)" placeholder="3." 
+                           style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem;" />
+                </div>
+            </div>
+
+            <!-- Surrender Section -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">🕊️ Surrender</h2>
+                    <select id="surrenderFrequency" onchange="saveFrequency('surrender', this.value)" style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 0.9rem;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Who/what is your higher power?</label>
+                    <input type="text" id="higherPower" onchange="saveDailyField('higherPower', this.value)" placeholder="God, Universe, Source, Higher Self..." 
+                           style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 16px;" />
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">What am I surrendering tonight?</label>
+                    <textarea id="surrenderTonight" onchange="saveDailyField('surrender', this.value)" placeholder="I release control of... I trust that..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical; margin-bottom: 16px;"></textarea>
+                    
+                    <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Prayer or closing thought</label>
+                    <textarea id="eveningPrayer" onchange="saveDailyField('prayer', this.value)" placeholder="Your prayer, meditation, or closing thought..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <!-- Complete Day Button -->
+            <div style="text-align: center; margin-top: 24px;">
+                <button onclick="completeDay()" style="background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%); color: white; border: none; border-radius: 8px; padding: 16px 48px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
+                    ✓ Complete Today's Check-In
+                </button>
+                <p style="color: #64748b; margin-top: 12px; font-size: 0.9rem;">This will save your entries and reset for tomorrow</p>
+            </div>
+        </div>
+
+        <!-- Reflections Tab -->
+        <div id="reflections" class="tab-content active">
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">✨ Emotional Alchemy</h2>
+                    <button class="edit-btn" onclick="toggleEmotionalAlchemy()" id="emotionalAlchemyToggle">Start</button>
+                </div>
+                <p style="color: #94a3b8; margin-bottom: 16px;">Clear emotional blocks before reflecting. Based on the ancient Tibetan practice "Feeding the Demon".</p>
+                <div id="emotionalAlchemySection" style="display: none;">
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: #a78bfa;">Step 1: Locate the Emotion</h3>
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">Where do you feel it in your body?</label>
+                        <input type="text" id="emotionLocation" placeholder="e.g., throat, chest, solar plexus, belly..." 
+                               style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 16px;" />
+                        
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">What color is it?</label>
+                        <input type="text" id="emotionColor" placeholder="Sense or guess..." 
+                               style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 16px;" />
+                        
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">What shape is it?</label>
+                        <input type="text" id="emotionShape" placeholder="e.g., ball, cloud, knot..." 
+                               style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 16px;" />
+                        
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">How old is this emotion?</label>
+                        <input type="text" id="emotionAge" placeholder="e.g., 5 years old, ancient, recent..." 
+                               style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; margin-bottom: 16px;" />
+                    </div>
+                    
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: #a78bfa;">Step 2: Dialogue with the Aspect</h3>
+                        <p style="color: #94a3b8; margin-bottom: 12px; font-style: italic;">"This aspect only wants what's best for you. Ask it: What goal do you have for me?"</p>
+                        <textarea id="emotionGoal1" placeholder="What goal does this aspect have for you?" 
+                                  style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical; margin-bottom: 12px;"></textarea>
+                        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 16px;">Visualize giving this aspect exactly what it wants. Feel it 100% complete.</p>
+                    </div>
+                    
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: #a78bfa;">Step 3: Go Deeper</h3>
+                        <p style="color: #94a3b8; margin-bottom: 12px; font-style: italic;">"Now that we've manifested that goal, what's an even HIGHER goal?"</p>
+                        <textarea id="emotionGoal2" placeholder="What's the higher goal?" 
+                                  style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical; margin-bottom: 12px;"></textarea>
+                        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 16px;">Visualize this 110% complete.</p>
+                        
+                        <textarea id="emotionGoal3" placeholder="What's an even HIGHER goal?" 
+                                  style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 80px; resize: vertical; margin-bottom: 12px;"></textarea>
+                    </div>
+                    
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: #a78bfa;">Step 4: Rest in Essence</h3>
+                        <p style="color: #94a3b8; margin-bottom: 12px;">Release the last goal. Feel the expansive, blissful, empty space. This is your true essence.</p>
+                        <label style="display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem;">What do you notice about the original emotion now?</label>
+                        <textarea id="emotionInsight" placeholder="What's changed? What wisdom did this reveal?" 
+                                  style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 100px; resize: vertical;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Life Inventory Section -->
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">📖 Life Inventory (Step 4)</h2>
+                    <select id="lifeChapterSelect" onchange="loadLifeChapter(this.value)" style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 0.9rem;">
+                        <option value="0-5">Early Childhood (0-5)</option>
+                        <option value="6-12">Childhood (6-12)</option>
+                        <option value="13-17">Adolescence (13-17)</option>
+                        <option value="18-25">Young Adult (18-25)</option>
+                        <option value="26-35">Adult (26-35)</option>
+                        <option value="36-50">Mid-Life (36-50)</option>
+                        <option value="51+">Later Life (51+)</option>
+                    </select>
+                </div>
+                <p style="color: #94a3b8; margin-bottom: 16px;">"Made a searching and fearless moral inventory of ourselves." Work through each life chapter chronologically.</p>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #ef4444;">Resentments</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">Who or what hurt you during this period? What did they do? How did it affect you?</p>
+                    <textarea id="inventoryResentments" onchange="saveLifeInventory('resentments', this.value)" placeholder="I resent [person/institution] because they [what they did]. This affected my [self-esteem/security/ambitions/relationships]." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 120px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #f59e0b;">Fears</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">What were you afraid of during this time? What fears drove your behavior?</p>
+                    <textarea id="inventoryFears" onchange="saveLifeInventory('fears', this.value)" placeholder="I was afraid of... This fear caused me to..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 120px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #8b5cf6;">Harms (My Part)</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">Who did you hurt? Where were you selfish, dishonest, self-seeking, or frightened?</p>
+                    <textarea id="inventoryHarms" onchange="saveLifeInventory('harms', this.value)" placeholder="I harmed [person] by [what I did]. My part was that I was [selfish/dishonest/self-seeking/frightened]." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 120px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px; margin-bottom: 16px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #06b6d4;">Patterns</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">What patterns do you notice from this period that may still affect you today?</p>
+                    <textarea id="inventoryPatterns" onchange="saveLifeInventory('patterns', this.value)" placeholder="I notice a pattern of... This shows up today as..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 100px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px; color: #10b981;">Amends Needed</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">Who from this period do you need to make amends to?</p>
+                    <textarea id="inventoryAmendsNeeded" onchange="saveLifeInventory('amendsNeeded', this.value)" placeholder="I need to make amends to... for..." 
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; min-height: 100px; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Letter to Self</h2>
+                <p>Write a letter to yourself about forgiveness, letting go, and what you're releasing this quarter.</p>
+                <textarea id="letterToSelf" 
+                          onchange="saveReflection('letterToSelf', this.value)"
+                          placeholder="Dear Self,\n\nI forgive myself for...\n\nI'm letting go of...\n\nI'm releasing..."></textarea>
+            </div>
+
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">Letters to Others</h2>
+                    <button class="edit-btn" onclick="toggleLettersEdit()" id="lettersEditBtn">Edit</button>
+                </div>
+                <p style="margin-bottom: 24px;">Write letters of forgiveness, gratitude, or closure to specific people.</p>
+                <div id="lettersToOthers">
+                    <!-- Letters generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Vision Casting Tab -->
+        <div id="vision" class="tab-content">
+            <div id="pillarsContainer">
+                <!-- All pillar sections generated by JS -->
+            </div>
+        </div>
+
+        <!-- Manifestation Tab -->
+        <div id="manifestation" class="tab-content">
+            <div class="card">
+                <h2>🌊 Abundance Frequency Audio</h2>
+                <p style="color: #94a3b8; margin-bottom: 16px;">Listen to this guided meditation to embody the frequency of limitless abundance.</p>
+                <audio id="audioPlayer-manifestation" controls style="width: 100%; margin-bottom: 16px;">
+                    <source src="abundance_frequency.wav" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">🌟 10-Step Abundance Release</h2>
+                    <button class="edit-btn" onclick="toggleAbundanceRelease()" id="abundanceReleaseToggle">Start</button>
+                </div>
+                <p style="color: #94a3b8; margin-bottom: 16px;">Walk down the spiral staircase, releasing blocks at each step.</p>
+                <div id="abundanceReleaseSection" style="display: none;">
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 24px;">
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release10" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Steps 10 & 9:</strong> Put down any judgments about yourself or where you are</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release8" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Steps 8 & 7:</strong> Put down any grievances, grudges, or grief</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release6" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Steps 6 & 5:</strong> Put down any fear around money, feelings of scarcity or lack</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release4" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Step 4:</strong> Put down any grasping for money, any fix-it energy</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release3" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Step 3:</strong> Put down any resistance (enter zero resistance)</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release2" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Step 2:</strong> Put down any stress around money or anything at all</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;">
+                            <input type="checkbox" id="release1" style="margin-right: 12px; width: 20px; height: 20px;" />
+                            <span style="color: #cbd5e1;"><strong>Step 1:</strong> Put down any timelines, any external pressure</span>
+                        </label>
+                        <div style="background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%); border-radius: 8px; padding: 16px; margin-top: 24px;">
+                            <p style="color: #ffffff; font-size: 1.1rem; margin: 0; text-align: center; font-style: italic;">
+                                You have now removed any blocks so you can see abundance, you can see wealth.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="manifestation-header" style="margin-bottom: 24px;">
+                    <h2 style="margin: 0;">Daily Affirmations</h2>
+                    <button class="edit-btn" onclick="toggleAffirmationsEdit()" id="affirmationsEditBtn">Edit</button>
+                </div>
+                <p style="margin-bottom: 24px;">Read these affirmations daily to reinforce your manifestations and goals.</p>
+                <div id="affirmationsList">
+                    <!-- Affirmations generated by JS -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Record Your Daily Affirmations</h2>
+                <p style="margin-bottom: 24px;">Record yourself reading all your affirmations for daily accountability.</p>
+                <div class="audio-section" style="background: transparent; border: none; padding: 0;">
+                    <div class="audio-controls">
+                        <button class="record-btn" id="recordBtn-manifestation" onclick="toggleRecording('manifestation')">
+                            <span id="recordText-manifestation">● Start Recording</span>
+                        </button>
+                        <span id="recordingTime-manifestation" style="color: #94a3b8;"></span>
+                    </div>
+                    <audio id="audioPlayback-manifestation" controls style="display: none;"></audio>
+                    <button class="export-audio-btn" id="exportAudioBtn-manifestation" 
+                            style="display: none;" onclick="exportAudio('manifestation')">
+                        Export to Slack
+                    </button>
+                </div>
+            </div>
+
+            <!-- Daily Practice Audio Links -->
+            <div class="card">
+                <div onclick="toggleDailyPracticeAudio()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                    <h2 style="margin: 0;">🎵 Daily Practice Audio</h2>
+                    <span id="dailyPracticeArrow" style="font-size: 24px; transition: transform 0.3s;">▼</span>
+                </div>
+                
+                <div id="dailyPracticeContent" style="display: none; margin-top: 24px;">
+                    <p style="margin-bottom: 24px; color: #9ca3af;">Download audio files for your iOS Shortcut automation.</p>
+                    
+                    <!-- Audio Download Section -->
+                    <div style="margin-bottom: 32px;">
+                        <div style="margin-bottom: 24px;">
+                            <h3 style="font-size: 18px; margin-bottom: 12px;">🌊 Abundance Meditation</h3>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                <button class="export-audio-btn" onclick="downloadAbundanceAudio()">⬇️ Download</button>
+                                <button class="export-audio-btn" onclick="copyAbundanceLink()">🔗 Copy Link</button>
+                            </div>
+                            <p style="margin-top: 8px; font-size: 14px; color: #9ca3af;">15-minute guided meditation</p>
+                        </div>
+                        
+                        <div>
+                            <h3 style="font-size: 18px; margin-bottom: 12px;">🎤 Your Affirmations</h3>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                <button class="export-audio-btn" onclick="downloadAffirmationsAudio()" id="downloadAffirmationsBtn" style="display: none;">⬇️ Download</button>
+                                <button class="export-audio-btn" onclick="copyAffirmationsLink()" id="copyAffirmationsBtn" style="display: none;">🔗 Copy Link</button>
+                            </div>
+                            <p style="margin-top: 8px; font-size: 14px; color: #9ca3af;" id="affirmationsLinkStatus">Record your affirmations first</p>
+                        </div>
+                    </div>
+                    
+                    <!-- iOS Shortcut Instructions -->
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">
+                        <h3 style="font-size: 18px; margin-bottom: 16px;">📱 iOS Shortcut Setup</h3>
+                        <p style="margin-bottom: 16px; color: #9ca3af;">Follow these steps to create a morning automation that plays both audio files:</p>
+                        
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: #a78bfa;">Step 1: Download Audio Files</h4>
+                            <ol style="margin-left: 20px; line-height: 1.8; color: #d1d5db;">
+                                <li>Click "⬇️ Download" for Abundance Meditation</li>
+                                <li>Record your affirmations above, then download them too</li>
+                                <li>Both files will be in your Downloads folder</li>
+                            </ol>
+                        </div>
+                        
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: #a78bfa;">Step 2: Create Automation</h4>
+                            <ol style="margin-left: 20px; line-height: 1.8; color: #d1d5db;">
+                                <li>Open the <strong>Shortcuts</strong> app on your iPhone</li>
+                                <li>Tap the <strong>Automation</strong> tab at the bottom</li>
+                                <li>Tap <strong>+</strong> (top right) → <strong>Create Personal Automation</strong></li>
+                                <li>Select <strong>Time of Day</strong></li>
+                                <li>Set time to <strong>7:00 AM</strong> (or your preferred wake-up time)</li>
+                                <li>Choose <strong>Daily</strong> or select specific days</li>
+                                <li>Tap <strong>Next</strong></li>
+                            </ol>
+                        </div>
+                        
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: #a78bfa;">Step 3: Add Actions</h4>
+                            <ol style="margin-left: 20px; line-height: 1.8; color: #d1d5db;">
+                                <li>Tap <strong>Add Action</strong></li>
+                                <li>Search for <strong>"Get File"</strong> and select it</li>
+                                <li>Tap <strong>File</strong> → Choose your <strong>abundance-meditation.wav</strong></li>
+                                <li>Tap <strong>+</strong> below to add another action</li>
+                                <li>Search for <strong>"Play Sound"</strong> and select it</li>
+                                <li><strong>IMPORTANT:</strong> Tap the Play Sound action → Toggle <strong>"Wait Until Finished"</strong> to <strong>ON</strong> ✅</li>
+                                <li>Repeat steps 2-6 for your <strong>affirmations</strong> file</li>
+                                <li>Tap <strong>Next</strong></li>
+                            </ol>
+                        </div>
+                        
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px;">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: #a78bfa;">Step 4: Finalize</h4>
+                            <ol style="margin-left: 20px; line-height: 1.8; color: #d1d5db;">
+                                <li>Toggle <strong>"Ask Before Running"</strong> to <strong>OFF</strong> (runs automatically)</li>
+                                <li>Tap <strong>Done</strong></li>
+                                <li>Your automation is ready! 🎉</li>
+                            </ol>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; border-radius: 4px;">
+                            <p style="margin: 0; color: #10b981; font-weight: 500;">✨ Result: Every morning at 7:00 AM, your phone will automatically play the 15-minute abundance meditation, then your affirmations!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Tab -->
+        <div id="visualization" class="tab-content">
+            <div style="background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%); border-radius: 12px; padding: 32px; margin-bottom: 32px;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 16px; color: #ffffff;">Today's Vision Reminder</h2>
+                <div id="todaysVisionReminder" style="font-size: 1.1rem; line-height: 1.8; color: #ffffff; margin-bottom: 16px;">
+                    <!-- Today's vision loaded from pillar visions -->
+                </div>
+                <p style="color: #e9d5ff; font-style: italic; margin-top: 16px;">Close your eyes and visualize this for 30 seconds...</p>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 2px solid #334155; padding-bottom: 8px;">
+                    <button class="tab" style="border: none; border-bottom: 3px solid #a78bfa; padding: 12px 0; background: transparent;" onclick="switchVisionTab('future')" id="futureVisionTab">
+                        Future Vision
+                    </button>
+                    <button class="tab" style="border: none; border-bottom: 3px solid transparent; padding: 12px 0; background: transparent;" onclick="switchVisionTab('pillars')" id="pillarVisionsTab">
+                        Pillar Visions
+                    </button>
+                </div>
+
+                <div id="futureVisionContent" class="vision-tab-content">
+                    <p style="color: #94a3b8; margin-bottom: 24px;">Write deeply about where you want to be in the future. This will be sent to Slack daily.</p>
+                    <textarea id="futureVision" 
+                              onchange="saveVisualization('futureVision', this.value)"
+                              placeholder="Close your eyes and imagine your ideal future...\n\nWhere are you living? What does your day look like?\nWhat have you accomplished? Who are you surrounded by?\nHow do you feel? What impact are you making?\n\nWrite in present tense as if you're already there..."
+                              style="width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; color: #e2e8f0; font-size: 1rem; font-family: inherit; min-height: 300px; resize: vertical;"></textarea>
+                </div>
+
+                <div id="pillarVisionsContent" class="vision-tab-content" style="display: none;">
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 32px; margin-bottom: 32px;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 24px; color: #ffffff;">Create New Vision</h3>
+                        
+                        <label style="display: block; margin-bottom: 12px; color: #94a3b8; font-size: 0.95rem;">Select Pillar</label>
+                        <div id="visionPillarGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px;">
+                            <!-- Pillar buttons generated by JS -->
+                        </div>
+
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; color: #94a3b8; font-size: 0.95rem;">Your Vision</label>
+                            <textarea id="newVisionText" 
+                                      placeholder="Describe your vision in vivid detail..."
+                                      style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; color: #e2e8f0; font-size: 1rem; font-family: inherit; min-height: 120px; resize: vertical;"></textarea>
+                        </div>
+
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; color: #94a3b8; font-size: 0.95rem;">Feeling Attachment</label>
+                            <textarea id="newVisionFeeling" 
+                                      placeholder="How does achieving this vision make you feel?"
+                                      style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; color: #e2e8f0; font-size: 1rem; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
+                        </div>
+
+                        <button onclick="saveNewVision()" 
+                                style="background: #8b5cf6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                            Save Vision
+                        </button>
+                    </div>
+
+                    <div id="pillarVisionsContainer">
+                        <!-- Pillar visions generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Planning Tab -->
+        <div id="action" class="tab-content">
+            <div class="highlights-list" id="highlightsList">
+                <!-- Highlights generated by JS -->
+            </div>
+        </div>
+
+        <!-- Progress Tab -->
+        <div id="progress" class="tab-content">
+            <div class="progress-viz">
+                <h2>Quarterly Progress - All Categories</h2>
+                
+                <div class="radar-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PILLARS = [
+            'Spiritual', 'Social', 'Relationship', 'Status', 
+            'Team', 'Business', 'Travel', 'Environment',
+            'Family', 'Skills', 'Health', 'Affirmations'
+        ];
+
+        const DEFAULT_MANIFESTATION_STATES = {
+            'Spiritual': [
+                'I am at peace and feel very abundant and practice gratitude daily, which makes me feel very low stress.',
+                'I pray to God every morning and he hears me out',
+                'I review my manifestation daily which makes everything I manifest come to reality.',
+                'I go to church weekly, I have found an amazing church in Rio',
+                'I am giving back to the community by building schools and financially donating things to charity.',
+                'I am visualizing every single morning and have developed the ability to train my subconscious mind.'
+            ]
+        };
+
+        let editingStates = {};
+        let editingLetters = false;
+        let editingAffirmations = false;
+        let editingPillarVisions = {};
+        let mediaRecorders = {};
+        let audioChunks = {};
+        let recordingIntervals = {};
+        let radarChart = null;
+        let lineChart = null;
+
+        const DEFAULT_AFFIRMATIONS = [
+            'I am a peak performer',
+            'I am living my best life and it keeps getting better',
+            'I am growing my businesses to new heights',
+            'I live in extreme abundance and security',
+            'Everyone around me supports me',
+            'I don\'t let me past results define me',
+            'I write my future with my own hands and conquer the world',
+            'I am a world conqueror',
+            'There is nothing I cannot achieve',
+            'I am getting in the best shape of my life',
+            'I am learning new things every day',
+            'I am a sales master and my team is incredible at sales',
+            'I am a marketing genius and my team brings in thousands of qualified leads every month',
+            'My stock portfolio is growing at an exponential rate with over 50% annual returns',
+            'I am profiting hundreds of thousands of dollars every single month',
+            'I have an incredible and extremely capable team that I enjoy working with',
+            'I am networking hard AF',
+            'I am the HARDEST WORKER IN EVERY ROOM',
+            'I have the house I want and the car I want and every material possession I want',
+            'I am fulfilled',
+            'I am getting closer to God',
+            'I am taking care of my family',
+            'I am evolving at an exponential rate'
+        ];
+
+        async function init() {
+            try {
+                // Get current quarter
+                const quarterSelect = document.getElementById('quarterSelect');
+                const [quarter, year] = quarterSelect.value.split(' ');
+                
+                // Initialize API with current quarter
+                await window.quarterlyAPI.init(quarter, year);
+                
+                // Load all data from database
+                await loadDataFromAPI();
+                
+                // Render UI
+                loadData();
+                loadDailyCheckIn();
+                renderSchedule();
+                renderLettersToOthers();
+                renderAffirmations();
+                renderPillarVisions();
+                renderAllPillars();
+                renderHighlights();
+                initCharts();
+                loadAudio('manifestation');
+                updateAffirmationsButtons();
+            } catch (error) {
+                console.error('Error initializing:', error);
+                showStatus('Error loading data. Please refresh the page.', true);
+            }
+        }
+        
+        async function loadDataFromAPI() {
+            // This function will be called to load data from API
+            // For now, we'll keep localStorage as fallback
+            // TODO: Implement full API integration
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'progress') {
+                updateCharts();
+            }
+        }
+
+        function renderAllPillars() {
+            const container = document.getElementById('pillarsContainer');
+            container.innerHTML = PILLARS.map(pillar => {
+                const data = getPillarData(pillar);
+                const states = data.manifestationStates || DEFAULT_MANIFESTATION_STATES[pillar] || [];
+                const isEditing = editingStates[pillar] || false;
+                
+                return `
+                    <div class="pillar-section" id="pillar-${pillar}">
+                        <div class="pillar-header">
+                            <h3 class="pillar-title">${pillar}</h3>
+                            <span class="pillar-last-rating">Last: ${data.lastRating || '0'}/10</span>
+                        </div>
+
+                        <div class="rating-section">
+                            <label class="rating-label">Last Quarter Rating</label>
+                            <div class="rating-buttons">
+                                ${Array.from({length: 11}, (_, i) => i).map(num => `
+                                    <button class="rating-btn ${data.rating === num ? 'selected' : ''}" 
+                                            onclick="selectRating('${pillar}', ${num})">${num}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="manifestation-states">
+                            <div class="manifestation-header">
+                                <h4>Manifestation States</h4>
+                                <button class="edit-btn" onclick="toggleEdit('${pillar}')">
+                                    ${isEditing ? 'Done' : 'Edit'}
+                                </button>
+                            </div>
+                            <div id="states-${pillar}">
+                                ${states.map((state, idx) => `
+                                    <div class="manifestation-state ${isEditing ? 'editing' : ''}">
+                                        <div class="manifestation-state-text">
+                                            ${isEditing ? 
+                                                `<input type="text" value="${state}" 
+                                                        onchange="updateState('${pillar}', ${idx}, this.value)" />` :
+                                                state
+                                            }
+                                        </div>
+                                        ${isEditing ? 
+                                            `<button class="remove-btn" onclick="removeState('${pillar}', ${idx})">×</button>` :
+                                            ''
+                                        }
+                                    </div>
+                                `).join('')}
+                                ${isEditing ? 
+                                    `<button class="add-state-btn" onclick="addState('${pillar}')">+ Add Manifestation State</button>` :
+                                    ''
+                                }
+                            </div>
+                        </div>
+
+                        <div class="audio-section">
+                            <h4>Record Your Vision</h4>
+                            <p style="color: #94a3b8; margin-bottom: 12px; font-size: 0.9rem;">Record an audio note about your vision for this pillar.</p>
+                            <div class="audio-controls">
+                                <button class="record-btn" id="recordBtn-${pillar}" onclick="toggleRecording('${pillar}')">
+                                    <span id="recordText-${pillar}">● Start Recording</span>
+                                </button>
+                                <span id="recordingTime-${pillar}" style="color: #94a3b8;"></span>
+                            </div>
+                            <audio id="audioPlayback-${pillar}" controls style="display: none;"></audio>
+                            <button class="export-audio-btn" id="exportAudioBtn-${pillar}" 
+                                    style="display: none;" onclick="exportAudio('${pillar}')">
+                                Export to Slack
+                            </button>
+                        </div>
+
+                        <div class="question-section">
+                            <label>Why this rating?</label>
+                            <textarea id="whyRating-${pillar}" 
+                                      onchange="savePillarField('${pillar}', 'whyRating', this.value)"
+                                      placeholder="Enter your thoughts...">${data.whyRating || ''}</textarea>
+                        </div>
+
+                        <div class="question-section">
+                            <label>What does a 10 look like next quarter?</label>
+                            <textarea id="whatTenLooks-${pillar}" 
+                                      onchange="savePillarField('${pillar}', 'whatTenLooks', this.value)"
+                                      placeholder="Enter your thoughts...">${data.whatTenLooks || ''}</textarea>
+                        </div>
+
+                        <div class="question-section">
+                            <label>Who do you need to be to create this 10?</label>
+                            <textarea id="whoNeedToBe-${pillar}" 
+                                      onchange="savePillarField('${pillar}', 'whoNeedToBe', this.value)"
+                                      placeholder="Enter your thoughts...">${data.whoNeedToBe || ''}</textarea>
+                        </div>
+
+                        <div class="question-section">
+                            <label>How will you celebrate when you arrive?</label>
+                            <textarea id="howCelebrate-${pillar}" 
+                                      onchange="savePillarField('${pillar}', 'howCelebrate', this.value)"
+                                      placeholder="Enter your thoughts...">${data.howCelebrate || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Load audio for each pillar
+            PILLARS.forEach(pillar => {
+                loadAudio(pillar);
+            });
+        }
+
+        function selectRating(pillar, rating) {
+            const pillarSection = document.getElementById(`pillar-${pillar}`);
+            pillarSection.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.toggle('selected', parseInt(btn.textContent) === rating);
+            });
+            savePillarField(pillar, 'rating', rating);
+        }
+
+        function toggleEdit(pillar) {
+            editingStates[pillar] = !editingStates[pillar];
+            renderAllPillars();
+        }
+
+        function addState(pillar) {
+            const data = getPillarData(pillar);
+            const states = data.manifestationStates || DEFAULT_MANIFESTATION_STATES[pillar] || [];
+            states.push('New manifestation state...');
+            savePillarField(pillar, 'manifestationStates', states);
+            renderAllPillars();
+        }
+
+        function removeState(pillar, index) {
+            const data = getPillarData(pillar);
+            const states = data.manifestationStates || DEFAULT_MANIFESTATION_STATES[pillar] || [];
+            states.splice(index, 1);
+            savePillarField(pillar, 'manifestationStates', states);
+            renderAllPillars();
+        }
+
+        function updateState(pillar, index, value) {
+            const data = getPillarData(pillar);
+            const states = data.manifestationStates || DEFAULT_MANIFESTATION_STATES[pillar] || [];
+            states[index] = value;
+            savePillarField(pillar, 'manifestationStates', states);
+        }
+
+        // Audio recording functions
+        async function toggleRecording(pillar) {
+            if (!mediaRecorders[pillar] || mediaRecorders[pillar].state === 'inactive') {
+                await startRecording(pillar);
+            } else {
+                stopRecording(pillar);
+            }
+        }
+
+        async function startRecording(pillar) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorders[pillar] = new MediaRecorder(stream);
+                audioChunks[pillar] = [];
+
+                mediaRecorders[pillar].ondataavailable = (event) => {
+                    audioChunks[pillar].push(event.data);
+                };
+
+                mediaRecorders[pillar].onstop = () => {
+                    const audioBlob = new Blob(audioChunks[pillar], { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioPlayback = document.getElementById(`audioPlayback-${pillar}`);
+                    audioPlayback.src = audioUrl;
+                    audioPlayback.style.display = 'block';
+                    document.getElementById(`exportAudioBtn-${pillar}`).style.display = 'block';
+                if (pillar === 'manifestation') updateAffirmationsButtons();
+                    
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        saveAudio(pillar, reader.result);
+                    };
+                    reader.readAsDataURL(audioBlob);
+                    
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorders[pillar].start();
+                const startTime = Date.now();
+                
+                const recordBtn = document.getElementById(`recordBtn-${pillar}`);
+                recordBtn.classList.add('recording');
+                document.getElementById(`recordText-${pillar}`).textContent = '■ Stop Recording';
+                
+                recordingIntervals[pillar] = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    document.getElementById(`recordingTime-${pillar}`).textContent = 
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 100);
+                
+            } catch (error) {
+                showStatus('Error accessing microphone: ' + error.message, true);
+            }
+        }
+
+        function stopRecording(pillar) {
+            if (mediaRecorders[pillar] && mediaRecorders[pillar].state === 'recording') {
+                mediaRecorders[pillar].stop();
+                clearInterval(recordingIntervals[pillar]);
+                
+                const recordBtn = document.getElementById(`recordBtn-${pillar}`);
+                recordBtn.classList.remove('recording');
+                document.getElementById(`recordText-${pillar}`).textContent = '● Start Recording';
+                document.getElementById(`recordingTime-${pillar}`).textContent = '';
+            }
+        }
+
+        function loadAudio(pillar) {
+            const audio = getAudio(pillar);
+            const audioPlayback = document.getElementById(`audioPlayback-${pillar}`);
+            if (audio) {
+                audioPlayback.src = audio;
+                audioPlayback.style.display = 'block';
+                document.getElementById(`exportAudioBtn-${pillar}`).style.display = 'block';
+                if (pillar === 'manifestation') updateAffirmationsButtons();
+            } else {
+                audioPlayback.style.display = 'none';
+                document.getElementById(`exportAudioBtn-${pillar}`).style.display = 'none';
+            }
+        }
+
+        function exportAudio(pillar) {
+            const audio = getAudio(pillar);
+            if (audio) {
+                const link = document.createElement('a');
+                link.href = audio;
+                link.download = `${pillar}-vision-Q4-2025.webm`;
+                link.click();
+                showStatus(`Audio for ${pillar} exported! Upload this file to Slack.`);
+            }
+        }
+
+        function renderHighlights() {
+            const list = document.getElementById('highlightsList');
+            list.innerHTML = Array.from({length: 10}, (_, i) => i + 1)
+                .map(num => {
+                    const data = getHighlightData(num);
+                    return `
+                        <div class="highlight-card">
+                            <h3>Highlight #${num}</h3>
+                            <div class="highlight-field">
+                                <label>What</label>
+                                <textarea id="highlight${num}What" 
+                                          onchange="saveHighlight(${num})"
+                                          placeholder="What happened?">${data.what || ''}</textarea>
+                            </div>
+                            <div class="highlight-field">
+                                <label>Why</label>
+                                <textarea id="highlight${num}Why" 
+                                          onchange="saveHighlight(${num})"
+                                          placeholder="Why/how did it happen?">${data.why || ''}</textarea>
+                            </div>
+                            <div class="highlight-field">
+                                <label>Next Step</label>
+                                <textarea id="highlight${num}Next" 
+                                          onchange="saveHighlight(${num})"
+                                          placeholder="One action to build momentum">${data.next || ''}</textarea>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // Charts
+        function initCharts() {
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+
+            radarChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: PILLARS,
+                    datasets: [
+                        {
+                            label: 'Q3 2025',
+                            data: PILLARS.map(() => Math.floor(Math.random() * 3) + 6),
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            pointBackgroundColor: '#6366f1'
+                        },
+                        {
+                            label: 'Q4 2025',
+                            data: PILLARS.map(() => Math.floor(Math.random() * 3) + 7),
+                            borderColor: '#a78bfa',
+                            backgroundColor: 'rgba(167, 139, 250, 0.2)',
+                            pointBackgroundColor: '#a78bfa'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: '#334155' },
+                            pointLabels: { color: '#cbd5e1' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#cbd5e1' }
+                        }
+                    }
+                }
+            });
+
+            lineChart = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'],
+                    datasets: PILLARS.map((pillar, i) => ({
+                        label: pillar,
+                        data: [
+                            Math.floor(Math.random() * 2) + 5,
+                            Math.floor(Math.random() * 2) + 5.5,
+                            Math.floor(Math.random() * 2) + 6,
+                            Math.floor(Math.random() * 2) + 7
+                        ],
+                        borderColor: `hsl(${i * 30}, 70%, 60%)`,
+                        tension: 0.3
+                    }))
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: '#334155' }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: '#334155' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#cbd5e1' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            // Update with actual data when integrated
+        }
+
+        // Data management
+        function loadData() {
+            const quarter = document.getElementById('quarterSelect').value;
+            const letterToSelf = getReflection('letterToSelf');
+            if (letterToSelf) {
+                document.getElementById('letterToSelf').value = letterToSelf;
+            }
+            const futureVision = getVisualization('futureVision');
+            if (futureVision) {
+                document.getElementById('futureVision').value = futureVision;
+            }
+        }
+
+        function saveReflection(field, value) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `reflection-${quarter}-${field}`;
+            localStorage.setItem(key, value);
+        }
+
+        function getReflection(field) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `reflection-${quarter}-${field}`;
+            return localStorage.getItem(key) || '';
+        }
+
+        function toggleLettersEdit() {
+            editingLetters = !editingLetters;
+            document.getElementById('lettersEditBtn').textContent = editingLetters ? 'Done' : 'Edit';
+            renderLettersToOthers();
+        }
+
+        function toggleEmotionalAlchemy() {
+            const section = document.getElementById('emotionalAlchemySection');
+            const btn = document.getElementById('emotionalAlchemyToggle');
+            const isVisible = section.style.display !== 'none';
+            section.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? 'Start' : 'Close';
+        }
+
+        // Daily Check-In Functions
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function saveDailyCheck(id, checked) {
+            const key = `daily-${getTodayKey()}-${id}`;
+            localStorage.setItem(key, checked);
+        }
+
+        function saveDailyField(field, value) {
+            const key = `daily-${getTodayKey()}-${field}`;
+            localStorage.setItem(key, value);
+        }
+
+        function saveFrequency(section, value) {
+            localStorage.setItem(`frequency-${section}`, value);
+        }
+
+        function loadDailyCheckIn() {
+            const today = getTodayKey();
+            
+            // Load checkboxes
+            ['morning1', 'morning2', 'morning3', 'morning4'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = localStorage.getItem(`daily-${today}-${id}`) === 'true';
+            });
+            
+            // Load text fields
+            const fields = ['intention', 'resentment', 'selfish', 'amends', 'wins', 'gratitude1', 'gratitude2', 'gratitude3', 'higherPower', 'surrender', 'prayer'];
+            const fieldMap = {
+                'intention': 'dailyIntention',
+                'resentment': 'inventoryResentment',
+                'selfish': 'inventorySelfish',
+                'amends': 'inventoryAmends',
+                'wins': 'inventoryWins',
+                'gratitude1': 'gratitude1',
+                'gratitude2': 'gratitude2',
+                'gratitude3': 'gratitude3',
+                'higherPower': 'higherPower',
+                'surrender': 'surrenderTonight',
+                'prayer': 'eveningPrayer'
+            };
+            
+            fields.forEach(field => {
+                const el = document.getElementById(fieldMap[field]);
+                if (el) {
+                    const value = localStorage.getItem(`daily-${today}-${field}`);
+                    if (value) el.value = value;
+                }
+            });
+            
+            // Load higher power (persists across days)
+            const higherPower = localStorage.getItem('higherPower');
+            if (higherPower) document.getElementById('higherPower').value = higherPower;
+            
+            // Load frequencies
+            ['morning', 'evening', 'gratitude', 'surrender'].forEach(section => {
+                const freq = localStorage.getItem(`frequency-${section}`) || 'daily';
+                const el = document.getElementById(`${section}Frequency`);
+                if (el) el.value = freq;
+            });
+        }
+
+        function completeDay() {
+            const today = getTodayKey();
+            
+            // Save higher power permanently
+            const higherPower = document.getElementById('higherPower').value;
+            if (higherPower) localStorage.setItem('higherPower', higherPower);
+            
+            // Archive today's entry
+            const archive = JSON.parse(localStorage.getItem('dailyArchive') || '{}');
+            archive[today] = {
+                intention: document.getElementById('dailyIntention').value,
+                resentment: document.getElementById('inventoryResentment').value,
+                selfish: document.getElementById('inventorySelfish').value,
+                amends: document.getElementById('inventoryAmends').value,
+                wins: document.getElementById('inventoryWins').value,
+                gratitude: [
+                    document.getElementById('gratitude1').value,
+                    document.getElementById('gratitude2').value,
+                    document.getElementById('gratitude3').value
+                ],
+                surrender: document.getElementById('surrenderTonight').value,
+                prayer: document.getElementById('eveningPrayer').value,
+                morning: {
+                    audio: document.getElementById('morning1').checked,
+                    release: document.getElementById('morning2').checked,
+                    affirmations: document.getElementById('morning3').checked,
+                    vision: document.getElementById('morning4').checked
+                }
+            };
+            localStorage.setItem('dailyArchive', JSON.stringify(archive));
+            
+            showStatus('Day completed and archived!');
+        }
+
+        // Life Inventory Functions
+        let currentLifeChapter = '0-5';
+
+        function saveLifeInventory(field, value) {
+            const chapter = document.getElementById('lifeChapterSelect').value;
+            const key = `lifeInventory-${chapter}-${field}`;
+            localStorage.setItem(key, value);
+        }
+
+        function loadLifeChapter(chapter) {
+            currentLifeChapter = chapter;
+            const fields = ['resentments', 'fears', 'harms', 'patterns', 'amendsNeeded'];
+            const fieldMap = {
+                'resentments': 'inventoryResentments',
+                'fears': 'inventoryFears',
+                'harms': 'inventoryHarms',
+                'patterns': 'inventoryPatterns',
+                'amendsNeeded': 'inventoryAmendsNeeded'
+            };
+            
+            fields.forEach(field => {
+                const el = document.getElementById(fieldMap[field]);
+                if (el) {
+                    const value = localStorage.getItem(`lifeInventory-${chapter}-${field}`) || '';
+                    el.value = value;
+                }
+            });
+        }
+
+        // Perfect Day Schedule Functions
+        let editingSchedule = false;
+        let currentScheduleView = 'day';
+        let currentDay = 'monday';
+        const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const DAY_NAMES = {
+            'monday': 'Monday',
+            'tuesday': 'Tuesday',
+            'wednesday': 'Wednesday',
+            'thursday': 'Thursday',
+            'friday': 'Friday',
+            'saturday': 'Saturday',
+            'sunday': 'Sunday'
+        };
+        const PILLAR_COLORS = {
+            'Spiritual': '#8b5cf6',
+            'Social': '#3b82f6',
+            'Relationship': '#ec4899',
+            'Status': '#f59e0b',
+            'Team': '#10b981',
+            'Business': '#06b6d4',
+            'Travel': '#14b8a6',
+            'Environment': '#84cc16',
+            'Family': '#f97316',
+            'Skills': '#6366f1',
+            'Health': '#ef4444',
+            'Affirmations': '#a78bfa'
+        };
+
+        function getPerfectDayTasks(day = null) {
+            const targetDay = day || currentDay;
+            const data = localStorage.getItem(`perfectDayTasks-${targetDay}`);
+            if (data) return JSON.parse(data);
+            
+            // Default Perfect Day Schedule
+            const defaultTasks = [
+                { title: 'Abundance Meditation', startTime: '08:00', duration: 30, pillar: 'Spiritual', checklist: ['Find quiet space', 'Listen to abundance frequency audio', 'Visualize abundance'] },
+                { title: 'Affirmations in Theta Waves', startTime: '08:30', duration: 30, pillar: 'Affirmations', checklist: ['Play theta wave music', 'Read affirmations slowly', 'Feel each one deeply'] },
+                { title: 'Run to Gym', startTime: '09:00', duration: 15, pillar: 'Health', checklist: ['Warm up', 'Light jog'] },
+                { title: 'Lift Weights', startTime: '09:15', duration: 45, pillar: 'Health', checklist: ['Compound movements', 'Progressive overload', 'Focus on form'] },
+                { title: 'Run Back Home', startTime: '10:00', duration: 15, pillar: 'Health', checklist: ['Cool down jog', 'Stretch'] },
+                { title: 'Start Scaling', startTime: '10:15', duration: 690, pillar: 'Business', checklist: ['Review priorities', 'Deep work session', 'Team check-ins'] },
+                { title: 'Wind Down + Metabolize Emotions', startTime: '22:00', duration: 30, pillar: 'Spiritual', checklist: ['Listen to metabolize emotions audio', 'Process the day', 'Release what no longer serves'] },
+                { title: 'Senos Meditation Device', startTime: '22:30', duration: 30, pillar: 'Spiritual', checklist: ['Set up device', 'Lie down comfortably', 'Enter deep meditation'] },
+                { title: 'Sleep in Dark Room', startTime: '23:00', duration: 540, pillar: 'Health', checklist: ['Blackout curtains', 'Cool temperature', 'No screens'] }
+            ];
+            
+            savePerfectDayTasks(defaultTasks);
+            return defaultTasks;
+        }
+
+        function savePerfectDayTasks(tasks, day = null) {
+            const targetDay = day || currentDay;
+            localStorage.setItem(`perfectDayTasks-${targetDay}`, JSON.stringify(tasks));
+        }
+
+        function switchScheduleView(view) {
+            currentScheduleView = view;
+            
+            // Update button styles
+            document.getElementById('dayViewBtn').style.background = view === 'day' ? '#10b981' : '#334155';
+            document.getElementById('weekViewBtn').style.background = view === 'week' ? '#10b981' : '#334155';
+            
+            // Show/hide appropriate views
+            document.getElementById('dayViewSchedule').style.display = view === 'day' ? 'flex' : 'none';
+            document.getElementById('weekViewSchedule').style.display = view === 'week' ? 'block' : 'none';
+            document.getElementById('daySelectorContainer').style.display = view === 'day' ? 'flex' : 'none';
+            
+            if (view === 'day') {
+                renderSchedule();
+            } else {
+                renderWeekView();
+            }
+        }
+
+        function selectDay(day) {
+            currentDay = day;
+            
+            // Update day selector button styles
+            document.querySelectorAll('.day-selector-btn').forEach(btn => {
+                if (btn.getAttribute('data-day') === day) {
+                    btn.style.background = '#10b981';
+                    btn.style.color = 'white';
+                    btn.style.border = 'none';
+                } else {
+                    btn.style.background = '#1e293b';
+                    btn.style.color = '#e2e8f0';
+                    btn.style.border = '1px solid #334155';
+                }
+            });
+            
+            renderSchedule();
+        }
+
+        function toggleScheduleEdit() {
+            editingSchedule = !editingSchedule;
+            document.getElementById('scheduleEditBtn').textContent = editingSchedule ? 'Done' : 'Edit';
+            if (currentScheduleView === 'day') {
+                renderSchedule();
+            } else {
+                renderWeekView();
+            }
+        }
+
+        function resetSchedule() {
+            if (confirm('This will reset your schedule to the default. Are you sure?')) {
+                // Clear all day schedules
+                DAYS.forEach(day => {
+                    localStorage.removeItem(`perfectDayTasks_${day}`);
+                });
+                // Also clear the old key if it exists
+                localStorage.removeItem('perfectDayTasks');
+                
+                // Reload the page to get fresh defaults
+                location.reload();
+            }
+        }
+
+        function renderSchedule() {
+            const timeColumn = document.getElementById('timeColumn');
+            const scheduleGrid = document.getElementById('scheduleGrid');
+            const tasks = getPerfectDayTasks();
+            
+            // Render time labels (5 AM to 10 PM)
+            const startHour = 5;
+            const endHour = 22;
+            const hourHeight = 180;
+            
+            let timeHTML = '';
+            for (let hour = startHour; hour <= endHour; hour++) {
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                timeHTML += `
+                    <div style="height: ${hourHeight}px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.75rem;">
+                        ${displayHour} ${ampm}
+                    </div>
+                `;
+            }
+            timeColumn.innerHTML = timeHTML;
+            
+            // Render grid lines
+            let gridHTML = '';
+            for (let hour = startHour; hour <= endHour; hour++) {
+                gridHTML += `<div style="height: ${hourHeight}px; border-bottom: 1px solid #334155;"></div>`;
+            }
+            
+            // Render tasks
+            tasks.forEach((task, idx) => {
+                const [hours, minutes] = task.startTime.split(':').map(Number);
+                const topPosition = ((hours - startHour) * hourHeight) + (minutes / 60 * hourHeight);
+                const height = (task.duration / 60) * hourHeight;
+                const color = PILLAR_COLORS[task.pillar] || '#6b46c1';
+                
+                const checklistHTML = task.checklist && task.checklist.length > 0 ? `
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 0.95rem;">
+                        ${task.checklist.map(item => `
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 8px; line-height: 1.4;">
+                                <span style="margin-right: 10px; opacity: 0.8; margin-top: 2px; font-size: 1.1rem;">•</span>
+                                <span style="color: rgba(255,255,255,0.95);">${item}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '';
+                
+                gridHTML += `
+                    <div onclick="${editingSchedule ? `editTask(${idx})` : ''}" 
+                         style="position: absolute; top: ${topPosition}px; left: 8px; right: 8px; height: ${height}px; background: ${color}; border-radius: 6px; padding: 16px; cursor: ${editingSchedule ? 'pointer' : 'default'}; overflow-y: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                        <div style="font-weight: 700; font-size: 1.2rem; color: white; margin-bottom: 8px; line-height: 1.3;">${task.title}</div>
+                        <div style="font-size: 1rem; color: rgba(255,255,255,0.95); font-weight: 600;">${task.startTime} • ${task.duration} min</div>
+                        ${checklistHTML}
+                    </div>
+                `;
+            });
+            
+            scheduleGrid.innerHTML = gridHTML;
+            
+            // Show add button in edit mode
+            if (editingSchedule && !document.getElementById('addTaskBtn')) {
+                scheduleGrid.innerHTML += `
+                    <button id="addTaskBtn" onclick="showAddTask()" 
+                            style="position: absolute; bottom: 16px; right: 16px; background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%); color: white; border: none; border-radius: 50%; width: 56px; height: 56px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(107, 70, 193, 0.4);">
+                        +
+                    </button>
+                `;
+            }
+        }
+
+        function showAddTask() {
+            document.getElementById('addTaskSection').style.display = 'block';
+            document.getElementById('editingTaskIndex').value = '-1';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskStartTime').value = '';
+            document.getElementById('taskDuration').value = '60';
+            document.getElementById('taskPillar').value = 'Health';
+            document.getElementById('taskChecklist').value = '';
+            document.getElementById('deleteTaskBtn').style.display = 'none';
+            document.getElementById('addTaskSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function editTask(index) {
+            const tasks = getPerfectDayTasks();
+            const task = tasks[index];
+            
+            document.getElementById('addTaskSection').style.display = 'block';
+            document.getElementById('editingTaskIndex').value = index;
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskStartTime').value = task.startTime;
+            document.getElementById('taskDuration').value = task.duration;
+            document.getElementById('taskPillar').value = task.pillar;
+            document.getElementById('taskChecklist').value = task.checklist ? task.checklist.join('\n') : '';
+            document.getElementById('deleteTaskBtn').style.display = 'block';
+            document.getElementById('addTaskSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function saveTask() {
+            const title = document.getElementById('taskTitle').value;
+            const startTime = document.getElementById('taskStartTime').value;
+            const duration = parseInt(document.getElementById('taskDuration').value);
+            const pillar = document.getElementById('taskPillar').value;
+            const checklistText = document.getElementById('taskChecklist').value;
+            const checklist = checklistText ? checklistText.split('\n').filter(item => item.trim()) : [];
+            
+            if (!title || !startTime || !duration) {
+                alert('Please fill in title, start time, and duration');
+                return;
+            }
+            
+            const task = { title, startTime, duration, pillar, checklist };
+            const tasks = getPerfectDayTasks();
+            const index = parseInt(document.getElementById('editingTaskIndex').value);
+            
+            if (index === -1) {
+                tasks.push(task);
+            } else {
+                tasks[index] = task;
+            }
+            
+            // Sort by start time
+            tasks.sort((a, b) => a.startTime.localeCompare(b.startTime));
+            
+            savePerfectDayTasks(tasks);
+            cancelTaskEdit();
+            renderSchedule();
+        }
+
+        function deleteTask() {
+            const index = parseInt(document.getElementById('editingTaskIndex').value);
+            if (index === -1) return;
+            
+            if (confirm('Delete this task?')) {
+                const tasks = getPerfectDayTasks();
+                tasks.splice(index, 1);
+                savePerfectDayTasks(tasks);
+                cancelTaskEdit();
+                renderSchedule();
+            }
+        }
+
+        function cancelTaskEdit() {
+            document.getElementById('addTaskSection').style.display = 'none';
+        }
+
+        function renderWeekView() {
+            const weekGridContainer = document.getElementById('weekGridContainer');
+            const startHour = 5;
+            const endHour = 22;
+            const hourHeight = 120;
+            
+            let html = '<div style="display: flex; width: 100%;">';
+            
+            // Time column
+            html += '<div style="width: 80px; border-right: 1px solid #334155; background: #1e293b;">';
+            html += '<div style="height: 40px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #94a3b8;">Time</div>';
+            for (let hour = startHour; hour <= endHour; hour++) {
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                html += `<div style="height: ${hourHeight}px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.75rem;">${displayHour} ${ampm}</div>`;
+            }
+            html += '</div>';
+            
+            // Day columns
+            DAYS.forEach(day => {
+                const tasks = getPerfectDayTasks(day);
+                html += `<div style="flex: 1; border-right: 1px solid #334155; position: relative;" onclick="selectDay('${day}'); switchScheduleView('day');" style="cursor: pointer;">`;
+                html += `<div style="height: 40px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #e2e8f0; background: #1e293b;">${DAY_NAMES[day]}</div>`;
+                
+                // Grid lines
+                for (let hour = startHour; hour <= endHour; hour++) {
+                    html += `<div style="height: ${hourHeight}px; border-bottom: 1px solid #334155;"></div>`;
+                }
+                
+                // Tasks
+                tasks.forEach((task, idx) => {
+                    const [hours, minutes] = task.startTime.split(':').map(Number);
+                    const topPosition = 40 + ((hours - startHour) * hourHeight) + (minutes / 60 * hourHeight);
+                    const height = (task.duration / 60) * hourHeight;
+                    const color = PILLAR_COLORS[task.pillar] || '#6b46c1';
+                    
+                    html += `
+                        <div onclick="selectDay('${day}'); switchScheduleView('day'); setTimeout(() => editTask(${idx}), 100);" style="position: absolute; top: ${topPosition}px; left: 4px; right: 4px; height: ${height}px; background: ${color}; border-radius: 6px; padding: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                            <div style="font-weight: 700; font-size: 0.9rem; color: white; line-height: 1.3; text-align: center;">${task.title}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            weekGridContainer.innerHTML = html;
+        }
+
+        function toggleAbundanceRelease() {
+            const section = document.getElementById('abundanceReleaseSection');
+            const btn = document.getElementById('abundanceReleaseToggle');
+            const isVisible = section.style.display !== 'none';
+            section.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? 'Start' : 'Close';
+        }
+
+        function renderLettersToOthers() {
+            const letters = getLettersToOthers();
+            const container = document.getElementById('lettersToOthers');
+            
+            container.innerHTML = letters.map((letter, idx) => {
+                const statusColors = {
+                    'pending': '#f59e0b',
+                    'made': '#06b6d4',
+                    'accepted': '#10b981',
+                    'not-needed': '#64748b'
+                };
+                const statusLabels = {
+                    'pending': 'Pending',
+                    'made': 'Amends Made',
+                    'accepted': 'Accepted',
+                    'not-needed': 'Not Needed'
+                };
+                const status = letter.amendsStatus || 'pending';
+                
+                return `
+                <div class="card" style="background: #0f172a; margin-bottom: 16px; border-left: 3px solid ${statusColors[status]};">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        ${editingLetters ? 
+                            `<input type="text" value="${letter.name}" 
+                                    onchange="updateLetterName(${idx}, this.value)"
+                                    style="background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 8px 12px; color: #e2e8f0; font-size: 1.1rem; font-weight: 600; flex: 1; margin-right: 12px;" 
+                                    placeholder="Person's name" />` :
+                            `<h3 style="margin: 0; font-size: 1.2rem; color: #a78bfa;">Letter to ${letter.name}</h3>`
+                        }
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <select onchange="updateAmendsStatus(${idx}, this.value)" 
+                                    style="background: #1e293b; border: 1px solid ${statusColors[status]}; border-radius: 6px; padding: 6px 10px; color: ${statusColors[status]}; font-size: 0.85rem;">
+                                <option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="made" ${status === 'made' ? 'selected' : ''}>Amends Made</option>
+                                <option value="accepted" ${status === 'accepted' ? 'selected' : ''}>Accepted</option>
+                                <option value="not-needed" ${status === 'not-needed' ? 'selected' : ''}>Not Needed</option>
+                            </select>
+                            ${editingLetters ? 
+                                `<button class="remove-btn" onclick="removeLetter(${idx})" style="font-size: 1.5rem; width: 32px; height: 32px;">×</button>` :
+                                ''
+                            }
+                        </div>
+                    </div>
+                    <textarea 
+                        onchange="updateLetterContent(${idx}, this.value)"
+                        placeholder="Dear ${letter.name},\n\nI want to tell you...\n\nI forgive you for...\n\nThank you for..."
+                        style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; color: #e2e8f0; font-size: 1rem; font-family: inherit; min-height: 150px; resize: vertical;">${letter.content || ''}</textarea>
+                </div>
+            `}).join('');
+
+            if (editingLetters) {
+                container.innerHTML += `
+                    <button class="add-state-btn" onclick="addLetter()" style="margin-top: 16px;">
+                        + Add Letter to Someone
+                    </button>
+                `;
+            }
+        }
+
+        function getLettersToOthers() {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `letters-${quarter}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveLettersToOthers(letters) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `letters-${quarter}`;
+            localStorage.setItem(key, JSON.stringify(letters));
+        }
+
+        function addLetter() {
+            const letters = getLettersToOthers();
+            letters.push({ name: 'New Person', content: '' });
+            saveLettersToOthers(letters);
+            renderLettersToOthers();
+        }
+
+        function removeLetter(index) {
+            const letters = getLettersToOthers();
+            letters.splice(index, 1);
+            saveLettersToOthers(letters);
+            renderLettersToOthers();
+        }
+
+        function updateLetterName(index, name) {
+            const letters = getLettersToOthers();
+            letters[index].name = name;
+            saveLettersToOthers(letters);
+        }
+
+        function updateLetterContent(index, content) {
+            const letters = getLettersToOthers();
+            letters[index].content = content;
+            saveLettersToOthers(letters);
+        }
+
+        function updateAmendsStatus(index, status) {
+            const letters = getLettersToOthers();
+            letters[index].amendsStatus = status;
+            saveLettersToOthers(letters);
+            renderLettersToOthers();
+        }
+
+        function toggleAffirmationsEdit() {
+            editingAffirmations = !editingAffirmations;
+            document.getElementById('affirmationsEditBtn').textContent = editingAffirmations ? 'Done' : 'Edit';
+            renderAffirmations();
+        }
+
+        function renderAffirmations() {
+            const affirmations = getAffirmations();
+            const container = document.getElementById('affirmationsList');
+            
+            container.innerHTML = affirmations.map((affirmation, idx) => `
+                <div class="manifestation-state ${editingAffirmations ? 'editing' : ''}">
+                    <div class="manifestation-state-text">
+                        ${editingAffirmations ? 
+                            `<input type="text" value="${affirmation}" 
+                                    onchange="updateAffirmation(${idx}, this.value)" />` :
+                            affirmation
+                        }
+                    </div>
+                    ${editingAffirmations ? 
+                        `<button class="remove-btn" onclick="removeAffirmation(${idx})">×</button>` :
+                        ''
+                    }
+                </div>
+            `).join('');
+
+            if (editingAffirmations) {
+                container.innerHTML += `
+                    <button class="add-state-btn" onclick="addAffirmation()" style="margin-top: 16px;">
+                        + Add Affirmation
+                    </button>
+                `;
+            }
+        }
+
+        function getAffirmations() {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `affirmations-${quarter}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : DEFAULT_AFFIRMATIONS;
+        }
+
+        function saveAffirmations(affirmations) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `affirmations-${quarter}`;
+            localStorage.setItem(key, JSON.stringify(affirmations));
+        }
+
+        function addAffirmation() {
+            const affirmations = getAffirmations();
+            affirmations.push('New affirmation...');
+            saveAffirmations(affirmations);
+            renderAffirmations();
+        }
+
+        function removeAffirmation(index) {
+            const affirmations = getAffirmations();
+            affirmations.splice(index, 1);
+            saveAffirmations(affirmations);
+            renderAffirmations();
+        }
+
+        function updateAffirmation(index, value) {
+            const affirmations = getAffirmations();
+            affirmations[index] = value;
+            saveAffirmations(affirmations);
+        }
+
+        function saveVisualization(field, value) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `visualization-${quarter}-${field}`;
+            localStorage.setItem(key, value);
+        }
+
+        function getVisualization(field) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `visualization-${quarter}-${field}`;
+            return localStorage.getItem(key) || '';
+        }
+
+        function switchVisionTab(tab) {
+            document.getElementById('futureVisionTab').style.borderBottomColor = tab === 'future' ? '#a78bfa' : 'transparent';
+            document.getElementById('pillarVisionsTab').style.borderBottomColor = tab === 'pillars' ? '#a78bfa' : 'transparent';
+            document.getElementById('futureVisionContent').style.display = tab === 'future' ? 'block' : 'none';
+            document.getElementById('pillarVisionsContent').style.display = tab === 'pillars' ? 'block' : 'none';
+        }
+
+        let selectedVisionPillar = null;
+
+        function selectVisionPillar(pillar) {
+            selectedVisionPillar = pillar;
+            PILLARS.forEach(p => {
+                const btn = document.getElementById(`visionPillar-${p}`);
+                if (btn) {
+                    btn.style.borderColor = p === pillar ? '#8b5cf6' : '#334155';
+                    btn.style.background = p === pillar ? '#8b5cf6' : '#1e293b';
+                }
+            });
+        }
+
+        function saveNewVision() {
+            if (!selectedVisionPillar) {
+                showStatus('Please select a pillar first', true);
+                return;
+            }
+            
+            const visionText = document.getElementById('newVisionText').value;
+            const visionFeeling = document.getElementById('newVisionFeeling').value;
+            
+            if (!visionText) {
+                showStatus('Please enter a vision', true);
+                return;
+            }
+            
+            const visions = getPillarVisions(selectedVisionPillar);
+            visions.push({
+                text: visionText,
+                feeling: visionFeeling,
+                createdAt: new Date().toISOString(),
+                nested: []
+            });
+            savePillarVisions(selectedVisionPillar, visions);
+            
+            // Clear form
+            document.getElementById('newVisionText').value = '';
+            document.getElementById('newVisionFeeling').value = '';
+            selectedVisionPillar = null;
+            
+            renderPillarVisions();
+            showStatus('Vision saved successfully!');
+        }
+
+        function goDeeper(pillar, visionPath) {
+            const pathStr = visionPath.join('-');
+            const deeperFormId = `deeper-form-${pillar}-${pathStr}`;
+            const existingForm = document.getElementById(deeperFormId);
+            
+            if (existingForm) {
+                existingForm.remove();
+                return;
+            }
+            
+            const visionEl = document.getElementById(`vision-${pillar}-${pathStr}`);
+            const formHtml = `
+                <div id="${deeperFormId}" style="background: #0f172a; border: 1px solid #8b5cf6; border-radius: 8px; padding: 16px; margin-top: 12px;">
+                    <p style="color: #a78bfa; margin-bottom: 12px; font-style: italic;">Now that you feel like this, what does your spirit desire now?</p>
+                    <textarea id="deeper-text-${pillar}-${pathStr}" 
+                              placeholder="Describe the deeper vision..."
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; font-family: inherit; min-height: 80px; resize: vertical; margin-bottom: 12px;"></textarea>
+                    <textarea id="deeper-feeling-${pillar}-${pathStr}" 
+                              placeholder="How does this deeper vision make you feel?"
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #e2e8f0; font-size: 0.95rem; font-family: inherit; min-height: 60px; resize: vertical; margin-bottom: 12px;"></textarea>
+                    <button onclick="saveDeeperVision('${pillar}', [${visionPath}])" 
+                            style="background: #8b5cf6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; margin-right: 8px;">
+                        Save Deeper Vision
+                    </button>
+                    <button onclick="goDeeper('${pillar}', [${visionPath}])" 
+                            style="background: #475569; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            visionEl.insertAdjacentHTML('beforeend', formHtml);
+        }
+
+        function saveDeeperVision(pillar, visionPath) {
+            const pathStr = visionPath.join('-');
+            const deeperText = document.getElementById(`deeper-text-${pillar}-${pathStr}`).value;
+            const deeperFeeling = document.getElementById(`deeper-feeling-${pillar}-${pathStr}`).value;
+            
+            if (!deeperText) {
+                showStatus('Please enter a vision', true);
+                return;
+            }
+            
+            const visions = getPillarVisions(pillar);
+            let current = visions;
+            
+            // Navigate to the nested vision
+            for (let i = 0; i < visionPath.length; i++) {
+                if (i === visionPath.length - 1) {
+                    if (!current[visionPath[i]].nested) {
+                        current[visionPath[i]].nested = [];
+                    }
+                    current[visionPath[i]].nested.push({
+                        text: deeperText,
+                        feeling: deeperFeeling,
+                        createdAt: new Date().toISOString(),
+                        nested: []
+                    });
+                } else {
+                    current = current[visionPath[i]].nested;
+                }
+            }
+            
+            savePillarVisions(pillar, visions);
+            renderPillarVisions();
+            showStatus('Deeper vision saved!');
+        }
+
+        function renderPillarVisions() {
+            // Render pillar selection grid
+            const grid = document.getElementById('visionPillarGrid');
+            if (grid) {
+                grid.innerHTML = PILLARS.map(pillar => `
+                    <button onclick="selectVisionPillar('${pillar}')" 
+                            id="visionPillar-${pillar}"
+                            style="background: #1e293b; border: 2px solid #334155; border-radius: 8px; padding: 16px; color: #e2e8f0; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;">
+                        ${pillar}
+                    </button>
+                `).join('');
+            }
+
+            // Update today's vision reminder
+            const allVisions = [];
+            PILLARS.forEach(pillar => {
+                const visions = getPillarVisions(pillar);
+                visions.forEach(vision => {
+                    allVisions.push({ pillar, vision: typeof vision === 'string' ? vision : vision.text });
+                });
+            });
+            
+            const todaysVisionEl = document.getElementById('todaysVisionReminder');
+            if (allVisions.length > 0) {
+                const randomVision = allVisions[Math.floor(Math.random() * allVisions.length)];
+                todaysVisionEl.innerHTML = `${randomVision.vision}<br><br><em style="color: #e9d5ff; font-size: 0.95rem;">The dopamine hit every time I look in the mirror. I feel strong.</em>`;
+            } else {
+                todaysVisionEl.innerHTML = 'Add vision statements to your pillars to see daily reminders here.';
+            }
+
+            const container = document.getElementById('pillarVisionsContainer');
+            
+            function renderVisionRecursive(vision, pillar, path, depth = 0) {
+                const visionText = typeof vision === 'string' ? vision : vision.text;
+                const visionFeeling = typeof vision === 'object' ? vision.feeling : '';
+                const nested = typeof vision === 'object' && vision.nested ? vision.nested : [];
+                const pathStr = path.join('-');
+                const indent = depth * 40;
+                
+                return `
+                    <div id="vision-${pillar}-${pathStr}" style="margin-left: ${indent}px; margin-bottom: 12px;">
+                        <div style="background: #1e293b; border-left: 3px solid ${depth === 0 ? '#8b5cf6' : '#64748b'}; border-radius: 8px; padding: 16px; position: relative;">
+                            <button onclick="removePillarVision('${pillar}', ${path[0]})" 
+                                    style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 1.2rem;">
+                                ×
+                            </button>
+                            <div style="color: #cbd5e1; line-height: 1.6; margin-bottom: ${visionFeeling ? '8px' : '0'};">${visionText}</div>
+                            ${visionFeeling ? `<div style="color: #94a3b8; font-style: italic; font-size: 0.9rem; margin-bottom: 12px;">${visionFeeling}</div>` : ''}
+                            <button onclick="goDeeper('${pillar}', [${path}])" 
+                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 8px;">
+                                ✨ Deeper
+                            </button>
+                        </div>
+                        ${nested.map((nestedVision, nestedIdx) => 
+                            renderVisionRecursive(nestedVision, pillar, [...path, nestedIdx], depth + 1)
+                        ).join('')}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = PILLARS.map(pillar => {
+                const visions = getPillarVisions(pillar);
+                if (visions.length === 0) return '';
+                
+                return `
+                    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="margin: 0; font-size: 1.2rem; color: #a78bfa;">${pillar} (${visions.length} visions)</h3>
+                        </div>
+                        ${visions.map((vision, idx) => renderVisionRecursive(vision, pillar, [idx])).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function togglePillarVisionEdit(pillar) {
+            editingPillarVisions[pillar] = !editingPillarVisions[pillar];
+            renderPillarVisions();
+        }
+
+        function getPillarVisions(pillar) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `pillar-visions-${quarter}-${pillar}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function savePillarVisions(pillar, visions) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `pillar-visions-${quarter}-${pillar}`;
+            localStorage.setItem(key, JSON.stringify(visions));
+        }
+
+        function addPillarVision(pillar) {
+            const visions = getPillarVisions(pillar);
+            visions.push('New vision statement...');
+            savePillarVisions(pillar, visions);
+            renderPillarVisions();
+        }
+
+        function removePillarVision(pillar, index) {
+            const visions = getPillarVisions(pillar);
+            visions.splice(index, 1);
+            savePillarVisions(pillar, visions);
+            renderPillarVisions();
+        }
+
+        function updatePillarVision(pillar, index, value) {
+            const visions = getPillarVisions(pillar);
+            visions[index] = value;
+            savePillarVisions(pillar, visions);
+        }
+
+        function saveReview() {
+            const quarter = document.getElementById('quarterSelect').value;
+            showStatus('Review saved successfully!');
+        }
+
+        function savePillarField(pillar, field, value) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `pillar-${quarter}-${pillar}`;
+            const data = getPillarData(pillar);
+            data[field] = value;
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function getPillarData(pillar) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `pillar-${quarter}-${pillar}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : {
+                lastRating: Math.floor(Math.random() * 3) + 7
+            };
+        }
+
+        function saveHighlight(num) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const data = {
+                what: document.getElementById(`highlight${num}What`).value,
+                why: document.getElementById(`highlight${num}Why`).value,
+                next: document.getElementById(`highlight${num}Next`).value
+            };
+            const key = `highlight-${quarter}-${num}`;
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function getHighlightData(num) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `highlight-${quarter}-${num}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveAudio(pillar, audioData) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `audio-${quarter}-${pillar}`;
+            localStorage.setItem(key, audioData);
+        }
+
+        function getAudio(pillar) {
+            const quarter = document.getElementById('quarterSelect').value;
+            const key = `audio-${quarter}-${pillar}`;
+            return localStorage.getItem(key);
+        }
+
+        // Daily Practice Audio Functions
+        
+        function downloadAbundanceAudio() {
+            const abundanceAudio = document.getElementById('audioPlayer-manifestation');
+            const url = abundanceAudio.currentSrc || abundanceAudio.src || 'abundance_frequency.wav';
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'abundance-meditation.wav';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        function copyAbundanceLink() {
+            const abundanceAudio = document.getElementById('audioPlayer-manifestation');
+            const url = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) + 'abundance_frequency.wav';
+            
+            navigator.clipboard.writeText(url).then(() => {
+                showStatus('✅ Abundance meditation link copied!');
+            });
+        }
+        
+        function downloadAffirmationsAudio() {
+            const audio = getAudio('manifestation');
+            if (!audio) {
+                showStatus('Please record your affirmations first', true);
+                return;
+            }
+            
+            const a = document.createElement('a');
+            a.href = audio;
+            const date = new Date().toISOString().split('T')[0];
+            a.download = `affirmations-${date}.wav`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        function copyAffirmationsLink() {
+            const affirmationsAudio = document.getElementById('audioPlayback-manifestation');
+            const url = affirmationsAudio.currentSrc || affirmationsAudio.src;
+            
+            if (!url) {
+                showStatus('Please record your affirmations first', true);
+                return;
+            }
+            
+            navigator.clipboard.writeText(url).then(() => {
+                showStatus('✅ Affirmations link copied!');
+            });
+        }
+        
+        // Update affirmations buttons visibility when recording is loaded
+        function updateAffirmationsButtons() {
+            const audio = getAudio('manifestation');
+            const downloadBtn = document.getElementById('downloadAffirmationsBtn');
+            const copyBtn = document.getElementById('copyAffirmationsBtn');
+            const status = document.getElementById('affirmationsLinkStatus');
+            
+            if (audio) {
+                downloadBtn.style.display = 'inline-block';
+                copyBtn.style.display = 'inline-block';
+                status.textContent = 'Recording ready for download';
+                status.style.color = '#10b981';
+            } else {
+                downloadBtn.style.display = 'none';
+                copyBtn.style.display = 'none';
+                status.textContent = 'Record your affirmations first';
+                status.style.color = '#9ca3af';
+            }
+        }
+
+        async function createMergedAudio() {
+            const status = document.getElementById('mergedAudioStatus');
+            const container = document.getElementById('mergedAudioContainer');
+            const player = document.getElementById('mergedAudioPlayer');
+            
+            try {
+                status.textContent = 'Creating combined audio...';
+                status.style.color = '#3b82f6';
+                
+                // Get the abundance audio
+                const abundanceAudio = document.getElementById('audioPlayer-manifestation');
+                const affirmationsAudio = document.getElementById('audioPlayback-manifestation');
+                
+                if (!abundanceAudio || (!abundanceAudio.src && !abundanceAudio.currentSrc)) {
+                    throw new Error('Abundance meditation audio not found');
+                }
+                
+                if (!affirmationsAudio || (!affirmationsAudio.src && !affirmationsAudio.currentSrc)) {
+                    throw new Error('Please record your affirmations first');
+                }
+                
+                // Fetch both audio files
+                const abundanceUrl = abundanceAudio.currentSrc || abundanceAudio.src;
+                const affirmationsUrl = affirmationsAudio.currentSrc || affirmationsAudio.src;
+                const abundanceResponse = await fetch(abundanceUrl);
+                const affirmationsResponse = await fetch(affirmationsUrl);
+                
+                const abundanceBlob = await abundanceResponse.blob();
+                const affirmationsBlob = await affirmationsResponse.blob();
+                
+                // Create audio context
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Decode audio data
+                const abundanceArrayBuffer = await abundanceBlob.arrayBuffer();
+                const affirmationsArrayBuffer = await affirmationsBlob.arrayBuffer();
+                
+                const abundanceBuffer = await audioContext.decodeAudioData(abundanceArrayBuffer);
+                const affirmationsBuffer = await audioContext.decodeAudioData(affirmationsArrayBuffer);
+                
+                // Create merged buffer
+                const totalLength = abundanceBuffer.length + affirmationsBuffer.length;
+                const mergedBuffer = audioContext.createBuffer(
+                    2,
+                    totalLength,
+                    abundanceBuffer.sampleRate
+                );
+                
+                // Copy abundance audio
+                for (let channel = 0; channel < 2; channel++) {
+                    const outputData = mergedBuffer.getChannelData(channel);
+                    const abundanceData = abundanceBuffer.getChannelData(Math.min(channel, abundanceBuffer.numberOfChannels - 1));
+                    outputData.set(abundanceData, 0);
+                }
+                
+                // Copy affirmations audio
+                for (let channel = 0; channel < 2; channel++) {
+                    const outputData = mergedBuffer.getChannelData(channel);
+                    const affirmationsData = affirmationsBuffer.getChannelData(Math.min(channel, affirmationsBuffer.numberOfChannels - 1));
+                    outputData.set(affirmationsData, abundanceBuffer.length);
+                }
+                
+                // Convert to WAV
+                mergedAudioBlob = audioBufferToWav(mergedBuffer);
+                mergedAudioUrl = URL.createObjectURL(mergedAudioBlob);
+                
+                // Show player
+                player.src = mergedAudioUrl;
+                container.style.display = 'block';
+                
+                const duration = Math.round(totalLength / abundanceBuffer.sampleRate / 60);
+                status.textContent = `✅ Combined audio created! (${duration} minutes)`;
+                status.style.color = '#10b981';
+                
+            } catch (error) {
+                status.textContent = '❌ Error: ' + error.message;
+                status.style.color = '#ef4444';
+            }
+        }
+
+        function audioBufferToWav(buffer) {
+            const numberOfChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1;
+            const bitDepth = 16;
+
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numberOfChannels * bytesPerSample;
+
+            const data = [];
+            for (let i = 0; i < buffer.length; i++) {
+                for (let channel = 0; channel < numberOfChannels; channel++) {
+                    const sample = Math.max(-1, Math.min(1, buffer.getChannelData(channel)[i]));
+                    data.push(sample < 0 ? sample * 0x8000 : sample * 0x7FFF);
+                }
+            }
+
+            const dataLength = data.length * bytesPerSample;
+            const bufferLength = 44 + dataLength;
+            const arrayBuffer = new ArrayBuffer(bufferLength);
+            const view = new DataView(arrayBuffer);
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numberOfChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            let offset = 44;
+            for (let i = 0; i < data.length; i++) {
+                view.setInt16(offset, data[i], true);
+                offset += 2;
+            }
+
+            return new Blob([arrayBuffer], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        function downloadMergedAudio() {
+            if (!mergedAudioBlob) return;
+            const a = document.createElement('a');
+            a.href = mergedAudioUrl;
+            a.download = 'daily-practice-' + new Date().toISOString().split('T')[0] + '.wav';
+            a.click();
+        }
+
+        function copyMergedAudioLink() {
+            if (!mergedAudioUrl) return;
+            navigator.clipboard.writeText(mergedAudioUrl).then(() => {
+                const status = document.getElementById('mergedAudioStatus');
+                status.textContent = '✅ Link copied to clipboard!';
+                setTimeout(() => {
+                    status.textContent = '';
+                }, 3000);
+            });
+        }
+
+        function toggleDailyPracticeAudio() {
+            const content = document.getElementById('dailyPracticeContent');
+            const arrow = document.getElementById('dailyPracticeArrow');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function exportData() {
+            const quarter = document.getElementById('quarterSelect').value;
+            const allData = {};
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes(quarter)) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            }
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `quarterly-review-${quarter}.json`;
+            link.click();
+            showStatus('Data exported successfully!');
+        }
+
+        function showStatus(message, isError = false) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.classList.toggle('error', isError);
+            statusEl.classList.add('show');
+            setTimeout(() => statusEl.classList.remove('show'), 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

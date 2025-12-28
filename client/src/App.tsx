@@ -44,6 +44,7 @@ import FulfilmentProducts from "./pages/fulfilment/Products";
 import FulfilmentInventory from "./pages/fulfilment/Inventory";
 import FulfilmentImageKitchen from "./pages/fulfilment/ImageKitchen";
 import AdminMigration from "./pages/AdminMigration";
+import QuarterlyReview from "./pages/QuarterlyReview";
 
 function Router() {
   return (
@@ -214,6 +215,11 @@ function Router() {
       <Route path="/admin/migration">
         <ProtectedRoute>
           <AdminMigration />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/quarterly-review">
+        <ProtectedRoute>
+          <QuarterlyReview />
         </ProtectedRoute>
       </Route>
       <Route path="/home">

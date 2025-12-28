@@ -632,3 +632,184 @@ export const clickupClients = pgTable("clickup_clients", {
 
 export type ClickUpClient = typeof clickupClients.$inferSelect;
 export type InsertClickUpClient = typeof clickupClients.$inferInsert;
+
+/**
+ * Quarterly Review Tables
+ */
+
+// Main quarterly review sessions
+export const quarterlyReviews = pgTable("quarterly_reviews", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull(),
+  quarter: text("quarter").notNull(), // e.g., "Q4 2025"
+  year: integer("year").notNull(),
+  quarterNumber: integer("quarterNumber").notNull(), // 1-4
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type QuarterlyReview = typeof quarterlyReviews.$inferSelect;
+export type InsertQuarterlyReview = typeof quarterlyReviews.$inferInsert;
+
+// Emotional Alchemy sessions
+export const emotionalAlchemy = pgTable("emotional_alchemy", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  reviewId: integer("reviewId").notNull(),
+  userId: integer("userId").notNull(),
+  emotion: text("emotion").notNull(),
+  bodySensation: text("bodySensation"),
+  thoughtPattern: text("thoughtPattern"),
+  transformation: text("transformation"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type EmotionalAlchemy = typeof emotionalAlchemy.$inferSelect;
+export type InsertEmotionalAlchemy = typeof emotionalAlchemy.$inferInsert;
+
+// Life Inventory (Step 4 work)
+export const lifeInventory = pgTable("life_inventory", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  reviewId: integer("reviewId").notNull(),
+  userId: integer("userId").notNull(),
+  lifePeriod: text("lifePeriod").notNull(),
+  resentments: text("resentments"),
+  fears: text("fears"),
+  harms: text("harms"),
+  patterns: text("patterns"),
+  amendsNeeded: text("amendsNeeded"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type LifeInventory = typeof lifeInventory.$inferSelect;
+export type InsertLifeInventory = typeof lifeInventory.$inferInsert;
+
+// Letters to self and others
+export const letters = pgTable("letters", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  reviewId: integer("reviewId").notNull(),
+  userId: integer("userId").notNull(),
+  letterType: text("letterType").notNull(), // 'self' or 'other'
+  recipientName: text("recipientName"),
+  content: text("content").notNull(),
+  status: text("status").default("pending").notNull(), // 'pending', 'sent', 'write_physical'
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type Letter = typeof letters.$inferSelect;
+export type InsertLetter = typeof letters.$inferInsert;
+
+// Quarterly vision ratings (snapshot of 12 pillars)
+export const quarterlyVisionRatings = pgTable("quarterly_vision_ratings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  reviewId: integer("reviewId").notNull(),
+  userId: integer("userId").notNull(),
+  
+  // Ratings (0-10)
+  spiritualRating: integer("spiritualRating"),
+  socialRating: integer("socialRating"),
+  relationshipRating: integer("relationshipRating"),
+  statusRating: integer("statusRating"),
+  teamRating: integer("teamRating"),
+  businessRating: integer("businessRating"),
+  travelRating: integer("travelRating"),
+  environmentRating: integer("environmentRating"),
+  familyRating: integer("familyRating"),
+  skillsRating: integer("skillsRating"),
+  healthRating: integer("healthRating"),
+  affirmationsRating: integer("affirmationsRating"),
+  
+  // Notes for each pillar
+  spiritualNotes: text("spiritualNotes"),
+  socialNotes: text("socialNotes"),
+  relationshipNotes: text("relationshipNotes"),
+  statusNotes: text("statusNotes"),
+  teamNotes: text("teamNotes"),
+  businessNotes: text("businessNotes"),
+  travelNotes: text("travelNotes"),
+  environmentNotes: text("environmentNotes"),
+  familyNotes: text("familyNotes"),
+  skillsNotes: text("skillsNotes"),
+  healthNotes: text("healthNotes"),
+  affirmationsNotes: text("affirmationsNotes"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type QuarterlyVisionRating = typeof quarterlyVisionRatings.$inferSelect;
+export type InsertQuarterlyVisionRating = typeof quarterlyVisionRatings.$inferInsert;
+
+// Custom manifestation states (user-defined)
+export const manifestationStatesCustom = pgTable("manifestation_states_custom", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull(),
+  pillar: text("pillar").notNull(),
+  stateText: text("stateText").notNull(),
+  sortOrder: integer("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type ManifestationStateCustom = typeof manifestationStatesCustom.$inferSelect;
+export type InsertManifestationStateCustom = typeof manifestationStatesCustom.$inferInsert;
+
+// Daily affirmations
+export const dailyAffirmations = pgTable("daily_affirmations", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull(),
+  affirmationText: text("affirmationText").notNull(),
+  sortOrder: integer("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type DailyAffirmation = typeof dailyAffirmations.$inferSelect;
+export type InsertDailyAffirmation = typeof dailyAffirmations.$inferInsert;
+
+// Audio recordings (stored in S3)
+export const audioRecordings = pgTable("audio_recordings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull(),
+  recordingType: text("recordingType").notNull(), // 'affirmations', 'meditation', etc.
+  fileUrl: text("fileUrl").notNull(),
+  fileName: text("fileName").notNull(),
+  durationSeconds: integer("durationSeconds"),
+  isLatest: boolean("isLatest").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AudioRecording = typeof audioRecordings.$inferSelect;
+export type InsertAudioRecording = typeof audioRecordings.$inferInsert;
+
+// Action highlights (top 10 quarterly wins)
+export const actionHighlights = pgTable("action_highlights", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  reviewId: integer("reviewId").notNull(),
+  userId: integer("userId").notNull(),
+  highlightNumber: integer("highlightNumber").notNull(), // 1-10
+  whatHappened: text("whatHappened"),
+  whyHow: text("whyHow"),
+  nextStep: text("nextStep"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type ActionHighlight = typeof actionHighlights.$inferSelect;
+export type InsertActionHighlight = typeof actionHighlights.$inferInsert;
+
+// Slack automation settings
+export const slackAutomationSettings = pgTable("slack_automation_settings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull().unique(),
+  webhookUrl: text("webhookUrl").notNull(),
+  sendTime: text("sendTime").default("07:00:00").notNull(), // HH:MM:SS format
+  isEnabled: boolean("isEnabled").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type SlackAutomationSetting = typeof slackAutomationSettings.$inferSelect;
+export type InsertSlackAutomationSetting = typeof slackAutomationSettings.$inferInsert;

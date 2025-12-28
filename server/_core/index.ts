@@ -64,6 +64,10 @@ async function startServer() {
   const uploadReceiptRouter = (await import("../upload-receipt")).default;
   app.use("/api", uploadReceiptRouter);
   
+  // Quarterly Review routes
+  const quarterlyReviewRouter = (await import("../routes/quarterlyReview")).default;
+  app.use("/api/quarterly-review", quarterlyReviewRouter);
+  
   // REST API endpoints for roadmap integration with daily standup
   
   // GET roadmap tasks
